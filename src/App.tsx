@@ -9,6 +9,7 @@ import { QuoteView } from "./components/Quote/QuoteView";
 import { CuttingPlanView } from "./components/Quote/CuttingPlanView";
 import { LangSwitcher } from "./components/LangSwitcher";
 import { useProject } from "./store/projectStore";
+import { APP_VERSION } from "./version";
 
 type Tab = "sketch" | "quote" | "cutting";
 
@@ -26,8 +27,11 @@ function App() {
     <div className="h-screen w-screen flex flex-col">
       <header className="h-14 bg-brand-900 text-white flex items-center px-5 justify-between shrink-0">
         <div>
-          <div className="text-base font-semibold tracking-tight">
-            {t("app.title")}
+          <div className="text-base font-semibold tracking-tight flex items-center gap-2">
+            <span>{t("app.title")}</span>
+            <span className="text-[10px] font-mono px-1.5 py-0.5 bg-brand-700/60 text-brand-100 rounded">
+              {APP_VERSION}
+            </span>
           </div>
           <div className="text-[11px] text-brand-100/80">{t("app.subtitle")}</div>
         </div>
