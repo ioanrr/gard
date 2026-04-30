@@ -33,13 +33,14 @@ interface ProjectState {
   removeModule: (id: string) => void;
 }
 
-const SEG_DEFAULT_LENGTH = 5000;
+const SEG_MIN_LENGTH = 100;
+const DEFAULT_PX_PER_MM = 0.05;
 
 export const useProject = create<ProjectState>((set, get) => {
   return {
     segments: [],
     modules: [],
-    pxPerMm: 0.05,
+    pxPerMm: DEFAULT_PX_PER_MM,
     closed: false,
     drawMode: "draw",
     selectedSegmentId: null,
@@ -52,7 +53,7 @@ export const useProject = create<ProjectState>((set, get) => {
     setCursor: (p) => set({ cursor: p }),
 
     addPoint: (p) => {
-      const { segments, closed, pendingPoint } = get();
+      const { segments, closed, pendingPoint, pxPerMm } = get();
       if (closed) return;
 
       if (!pendingPoint && segments.length === 0) {
@@ -60,11 +61,16 @@ export const useProject = create<ProjectState>((set, get) => {
         return;
       }
       const start = pendingPoint ?? segments[segments.length - 1].end;
+      const distPx = distance(start, p);
+      const realLengthMm = Math.max(
+        SEG_MIN_LENGTH,
+        Math.round(distPx / pxPerMm / 100) * 100
+      );
       const seg: Segment = {
         id: `s_${Math.random().toString(36).slice(2, 9)}`,
         start,
         end: p,
-        realLengthMm: SEG_DEFAULT_LENGTH,
+        realLengthMm,
       };
       set({
         segments: [...segments, seg],
@@ -74,7 +80,7 @@ export const useProject = create<ProjectState>((set, get) => {
     },
 
     closePerimeter: () => {
-      const { segments } = get();
+      const { segments, pxPerMm } = get();
       if (segments.length < 2) return;
       const first = segments[0].start;
       const last = segments[segments.length - 1].end;
@@ -82,11 +88,16 @@ export const useProject = create<ProjectState>((set, get) => {
         set({ closed: true, pendingPoint: null });
         return;
       }
+      const distPx = distance(last, first);
+      const realLengthMm = Math.max(
+        SEG_MIN_LENGTH,
+        Math.round(distPx / pxPerMm / 100) * 100
+      );
       const seg: Segment = {
         id: `s_${Math.random().toString(36).slice(2, 9)}`,
         start: last,
         end: first,
-        realLengthMm: SEG_DEFAULT_LENGTH,
+        realLengthMm,
       };
       set({
         segments: [...segments, seg],
@@ -136,7 +147,11 @@ export const useProject = create<ProjectState>((set, get) => {
     addModuleToSegment: (segmentId, kind) => {
       const seg = get().segments.find((s) => s.id === segmentId);
       if (!seg) return;
-      const m = defaultModule(kind, segmentId, get().modules.filter((x) => x.segmentId === segmentId).length);
+      const existing = get().modules.filter((x) => x.segmentId === segmentId);
+      const usedSpan = existing.reduce((s, m) => Math.max(s, m.positionMm + m.width), 0);
+      const m = defaultModule(kind, segmentId, usedSpan);
+      const maxStart = Math.max(0, seg.realLengthMm - m.width);
+      m.positionMm = Math.min(m.positionMm, maxStart);
       set({ modules: [...get().modules, m], selectedModuleId: m.id });
     },
 
@@ -157,27 +172,39 @@ export function autoPanelsForSegment(
   segment: Segment,
   modulesOnSegment: FenceModule[]
 ): FenceModule[] {
-  const used = modulesOnSegment.reduce((s, m) => s + m.width, 0);
-  const remaining = segment.realLengthMm - used;
-  if (remaining <= 200) return [];
-  const count = Math.ceil(remaining / MAX_PANEL_WIDTH_MM);
-  const panelWidth = Math.floor(remaining / count);
+  const sorted = [...modulesOnSegment].sort((a, b) => a.positionMm - b.positionMm);
   const panels: FenceModule[] = [];
-  for (let i = 0; i < count; i++) {
-    panels.push({
-      id: `auto_${segment.id}_${i}`,
-      segmentId: segment.id,
-      kind: "panel",
-      position: 1000 + i,
-      width: panelWidth,
-      height: 1800,
-      colorId: "ral7016",
-      infill: "slatted",
-      slatWidth: 100,
-      gap: 20,
-      orientation: "horizontal",
-    });
+  let cursor = 0;
+  let panelIdx = 0;
+
+  const fillGap = (start: number, end: number) => {
+    const gap = end - start;
+    if (gap <= 200) return;
+    const count = Math.ceil(gap / MAX_PANEL_WIDTH_MM);
+    const panelWidth = Math.floor(gap / count);
+    for (let i = 0; i < count; i++) {
+      panels.push({
+        id: `auto_${segment.id}_${panelIdx++}`,
+        segmentId: segment.id,
+        kind: "panel",
+        positionMm: start + i * panelWidth,
+        width: panelWidth,
+        height: 1800,
+        colorId: "ral7016",
+        infill: "slatted",
+        slatWidth: 100,
+        gap: 20,
+        orientation: "horizontal",
+      });
+    }
+  };
+
+  for (const m of sorted) {
+    if (m.positionMm > cursor) fillGap(cursor, m.positionMm);
+    cursor = Math.max(cursor, m.positionMm + m.width);
   }
+  if (cursor < segment.realLengthMm) fillGap(cursor, segment.realLengthMm);
+
   return panels;
 }
 

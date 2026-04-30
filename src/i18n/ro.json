@@ -18,10 +18,11 @@
     "internal": "Vedere internă"
   },
   "sketch": {
-    "instructions": "Click pe canvas pentru a adăuga puncte. Dublu-click pentru a închide perimetrul. Click pe un segment pentru a-i seta lungimea.",
+    "instructions": "Click pe canvas pentru a desena un punct, apoi mai dă click pentru a adăuga segmente. Poți desena doar o latură (gard simplu) sau să închizi perimetrul cu dublu-click. Selectează apoi un segment ca să-i editezi lungimea reală.",
     "clear": "Șterge tot",
     "undo": "Înapoi",
     "close": "Închide perimetrul",
+    "finish": "Termină desenul",
     "addSegment": "Mod desen",
     "select": "Mod selecție",
     "scale": "Scară",
@@ -52,6 +53,8 @@
     "horizontal": "Orizontală",
     "vertical": "Verticală",
     "noModuleSelected": "Selectează un modul pentru a-l configura",
+    "position": "Poziție pe segment",
+    "distFromStart": "Distanță de la capătul stâng (mm)",
     "infill": {
       "solid": "Solid (fără spațiu)",
       "slatted": "Cu spațiere",

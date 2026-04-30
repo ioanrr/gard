@@ -14,7 +14,7 @@ export interface FenceModule {
   id: string;
   kind: ModuleKind;
   segmentId: string;
-  position: number;
+  positionMm: number;
   width: number;
   height: number;
   colorId: string;

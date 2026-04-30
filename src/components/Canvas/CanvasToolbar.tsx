@@ -46,12 +46,22 @@ export function CanvasToolbar() {
       </button>
       <button
         type="button"
+        className="px-3 py-1.5 rounded text-sm bg-brand-50 text-brand-900 border border-brand-200 hover:bg-brand-100 disabled:opacity-50"
+        onClick={() => setDrawMode("select")}
+        disabled={segCount === 0 || drawMode === "select"}
+        title={t("sketch.finish")}
+      >
+        ✓ {t("sketch.finish")}
+      </button>
+      <button
+        type="button"
         className="px-3 py-1.5 rounded text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
         onClick={closePerimeter}
         disabled={segCount < 2 || closed}
       >
         {t("sketch.close")}
       </button>
+      <div className="flex-1" />
       <button
         type="button"
         className="px-3 py-1.5 rounded text-sm bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-50"

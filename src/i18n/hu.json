@@ -18,10 +18,11 @@
     "internal": "Belső nézet"
   },
   "sketch": {
-    "instructions": "Kattints a vászonra pontok hozzáadásához. Dupla kattintás a kerület lezárásához. Kattints egy szakaszra a hosszának beállításához.",
+    "instructions": "Kattints a vászonra egy pont kijelöléséhez, majd újabb kattintásokkal adj hozzá szakaszokat. Csak egy oldalt is rajzolhatsz, vagy dupla kattintással lezárhatod a kerületet. A szakasz tényleges hosszát a kijelölés után állíthatod be.",
     "clear": "Minden törlése",
     "undo": "Vissza",
     "close": "Kerület zárása",
+    "finish": "Rajz befejezése",
     "addSegment": "Rajz mód",
     "select": "Kijelölés mód",
     "scale": "Méretarány",
@@ -52,6 +53,8 @@
     "horizontal": "Vízszintes",
     "vertical": "Függőleges",
     "noModuleSelected": "Válassz ki egy modult a konfiguráláshoz",
+    "position": "Pozíció a szakaszon",
+    "distFromStart": "Távolság a bal végtől (mm)",
     "infill": {
       "solid": "Tömör (hézag nélkül)",
       "slatted": "Hézagos",

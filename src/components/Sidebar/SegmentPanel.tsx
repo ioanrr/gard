@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useProject } from "../../store/projectStore";
 import type { ModuleKind } from "../../engine/types";
@@ -19,6 +20,14 @@ export function SegmentPanel() {
   const modulesOnSeg = modules.filter((m) => m.segmentId === segmentId);
   const setSegmentLength = useProject((s) => s.setSegmentLength);
   const addModuleToSegment = useProject((s) => s.addModuleToSegment);
+  const lengthInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (segmentId && lengthInputRef.current) {
+      lengthInputRef.current.focus();
+      lengthInputRef.current.select();
+    }
+  }, [segmentId]);
 
   if (!segment) {
     return (
@@ -38,21 +47,25 @@ export function SegmentPanel() {
       </div>
 
       <label className="block">
-        <div className="text-sm text-gray-700 mb-1">
+        <div className="text-sm text-gray-800 mb-1 font-medium">
           {t("sketch.segmentLength")}
         </div>
         <input
+          ref={lengthInputRef}
           type="number"
           min={100}
           step={10}
           value={segment.realLengthMm}
           onChange={(e) => setSegmentLength(segment.id, Number(e.target.value))}
-          className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
+          className="w-full px-3 py-2 border-2 border-brand-200 focus:border-brand-700 rounded text-sm font-medium outline-none"
         />
+        <div className="text-xs text-gray-500 mt-1">
+          = {(segment.realLengthMm / 1000).toFixed(2)} m
+        </div>
       </label>
 
-      <div className="text-xs text-gray-500 grid grid-cols-2 gap-1">
-        <span>Folosit:</span>
+      <div className="text-xs text-gray-500 grid grid-cols-2 gap-1 bg-gray-50 p-2 rounded">
+        <span>Folosit module:</span>
         <span className="text-right">{used} mm</span>
         <span>Rămas (auto-panouri):</span>
         <span className="text-right">{remaining} mm</span>

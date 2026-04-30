@@ -9,6 +9,9 @@ export function ModuleConfig() {
   const { t } = useTranslation();
   const moduleId = useProject((s) => s.selectedModuleId);
   const m = useProject((s) => s.modules.find((x) => x.id === moduleId) ?? null);
+  const segment = useProject((s) =>
+    m ? s.segments.find((x) => x.id === m.segmentId) ?? null : null
+  );
   const update = useProject((s) => s.updateModule);
   const remove = useProject((s) => s.removeModule);
 
@@ -21,6 +24,8 @@ export function ModuleConfig() {
   }
 
   const calc = calculateModule(m);
+  const segLen = segment?.realLengthMm ?? 0;
+  const maxStart = Math.max(0, segLen - m.width);
 
   return (
     <div className="p-4 space-y-3 overflow-y-auto">
@@ -36,6 +41,39 @@ export function ModuleConfig() {
           {t("modules.remove")}
         </button>
       </div>
+
+      {segment && (
+        <div className="bg-brand-50 border border-brand-200 rounded p-3 space-y-2">
+          <div className="text-xs uppercase tracking-wide text-brand-700 font-semibold">
+            {t("modules.position")}
+          </div>
+          <NumberRow
+            label={t("modules.distFromStart")}
+            value={m.positionMm}
+            min={0}
+            step={50}
+            onChange={(v) => update(m.id, { positionMm: Math.min(maxStart, Math.max(0, v)) })}
+          />
+          <input
+            type="range"
+            min={0}
+            max={maxStart}
+            step={50}
+            value={m.positionMm}
+            onChange={(e) =>
+              update(m.id, { positionMm: Number(e.target.value) })
+            }
+            className="w-full accent-brand-700"
+          />
+          <div className="text-xs text-gray-600 flex justify-between">
+            <span>0 m</span>
+            <span>
+              {((m.positionMm + m.width) / 1000).toFixed(2)} m (capăt drept modul)
+            </span>
+            <span>{(segLen / 1000).toFixed(2)} m</span>
+          </div>
+        </div>
+      )}
 
       <NumberRow
         label={t("modules.width")}
@@ -172,11 +210,13 @@ function NumberRow({
   label,
   value,
   min,
+  step,
   onChange,
 }: {
   label: string;
   value: number;
   min?: number;
+  step?: number;
   onChange: (v: number) => void;
 }) {
   return (
@@ -185,7 +225,7 @@ function NumberRow({
       <input
         type="number"
         min={min ?? 0}
-        step={10}
+        step={step ?? 10}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
         className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"

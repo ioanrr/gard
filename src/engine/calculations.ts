@@ -256,12 +256,12 @@ export function calculateModule(m: FenceModule): ModuleCalculation {
 export function defaultModule(
   kind: ModuleKind,
   segmentId: string,
-  position: number
+  positionMm: number
 ): FenceModule {
   const base = {
     id: `m_${Math.random().toString(36).slice(2, 9)}`,
     segmentId,
-    position,
+    positionMm,
     height: 1800,
     colorId: "ral7016",
     infill: "slatted" as const,
