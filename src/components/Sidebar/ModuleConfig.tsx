@@ -14,6 +14,7 @@ export function ModuleConfig() {
   );
   const update = useProject((s) => s.updateModule);
   const remove = useProject((s) => s.removeModule);
+  const selectSegment = useProject((s) => s.selectSegment);
 
   if (!m) {
     return (
@@ -29,6 +30,15 @@ export function ModuleConfig() {
 
   return (
     <div className="p-4 space-y-3 overflow-y-auto">
+      {segment && (
+        <button
+          type="button"
+          onClick={() => selectSegment(segment.id)}
+          className="w-full text-left text-xs text-brand-700 hover:text-brand-900 hover:bg-brand-50 px-2 py-1.5 rounded border border-brand-100"
+        >
+          ← {t("modules.backToSegment")} ({(segLen / 1000).toFixed(2)} m)
+        </button>
+      )}
       <div className="flex items-center justify-between">
         <div className="text-xs uppercase tracking-wide text-gray-500 font-semibold">
           {t("modules.config")} — {t(`modules.${m.kind}`)}

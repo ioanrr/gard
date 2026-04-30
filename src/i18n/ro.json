@@ -56,6 +56,7 @@
     "noModuleSelected": "Selectează un modul pentru a-l configura",
     "position": "Poziție pe segment",
     "distFromStart": "Distanță de la capătul stâng (mm)",
+    "backToSegment": "Înapoi la segment / adaugă alt modul",
     "infill": {
       "solid": "Solid (fără spațiu)",
       "slatted": "Cu spațiere",
