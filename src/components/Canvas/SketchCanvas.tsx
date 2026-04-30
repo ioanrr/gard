@@ -1,0 +1,377 @@
+import { useEffect, useRef, useState } from "react";
+import { Stage, Layer, Line, Circle, Text, Group, Rect } from "react-konva";
+import type Konva from "konva";
+import { useProject } from "../../store/projectStore";
+import { useTranslation } from "react-i18next";
+import type { Segment, FenceModule } from "../../engine/types";
+
+const SEGMENT_OFFSET = 16;
+
+interface Props {
+  width: number;
+  height: number;
+}
+
+export function SketchCanvas({ width, height }: Props) {
+  const stageRef = useRef<Konva.Stage>(null);
+  const [hoverSegId, setHoverSegId] = useState<string | null>(null);
+
+  const segments = useProject((s) => s.segments);
+  const modules = useProject((s) => s.modules);
+  const closed = useProject((s) => s.closed);
+  const drawMode = useProject((s) => s.drawMode);
+  const selectedSegmentId = useProject((s) => s.selectedSegmentId);
+  const selectedModuleId = useProject((s) => s.selectedModuleId);
+  const pendingPoint = useProject((s) => s.pendingPoint);
+  const cursor = useProject((s) => s.cursor);
+  const addPoint = useProject((s) => s.addPoint);
+  const setCursor = useProject((s) => s.setCursor);
+  const selectSegment = useProject((s) => s.selectSegment);
+  const selectModule = useProject((s) => s.selectModule);
+  const closePerimeter = useProject((s) => s.closePerimeter);
+
+  const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
+    if (drawMode !== "draw") return;
+    if (e.target !== stageRef.current) return;
+    const pos = stageRef.current?.getPointerPosition();
+    if (!pos) return;
+    addPoint({ x: pos.x, y: pos.y });
+  };
+
+  const handleMouseMove = () => {
+    const pos = stageRef.current?.getPointerPosition();
+    if (!pos) return;
+    setCursor({ x: pos.x, y: pos.y });
+  };
+
+  const handleMouseLeave = () => setCursor(null);
+
+  const handleDblClick = () => {
+    if (drawMode === "draw" && segments.length >= 2 && !closed) {
+      closePerimeter();
+    }
+  };
+
+  const anchor: { x: number; y: number } | null =
+    pendingPoint ??
+    (segments.length > 0 && !closed ? segments[segments.length - 1].end : null);
+
+  const showGhost =
+    drawMode === "draw" && !closed && anchor !== null && cursor !== null;
+
+  return (
+    <div className="relative w-full h-full overflow-hidden bg-[#fbfaf6] border border-gray-200 rounded-lg">
+      <GridLayer width={width} height={height} />
+      <Stage
+        ref={stageRef}
+        width={width}
+        height={height}
+        onClick={handleClick}
+        onDblClick={handleDblClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ position: "absolute", inset: 0 }}
+      >
+        <Layer>
+          {showGhost && (
+            <Line
+              points={[anchor!.x, anchor!.y, cursor!.x, cursor!.y]}
+              stroke="#447a5e"
+              strokeWidth={2}
+              dash={[6, 6]}
+              listening={false}
+              opacity={0.85}
+            />
+          )}
+          {showGhost && (
+            <GhostLengthLabel
+              ax={anchor!.x}
+              ay={anchor!.y}
+              bx={cursor!.x}
+              by={cursor!.y}
+            />
+          )}
+          {segments.map((seg) => (
+            <SegmentNode
+              key={seg.id}
+              seg={seg}
+              modules={modules.filter((m) => m.segmentId === seg.id)}
+              selected={selectedSegmentId === seg.id}
+              hovered={hoverSegId === seg.id}
+              selectedModuleId={selectedModuleId}
+              onHover={(h) => setHoverSegId(h ? seg.id : null)}
+              onClickSegment={() => selectSegment(seg.id)}
+              onClickModule={(id) => selectModule(id)}
+            />
+          ))}
+          {segments.map((seg, i) => (
+            <Group key={`pt_${seg.id}`}>
+              {i === 0 && (
+                <Circle x={seg.start.x} y={seg.start.y} radius={5} fill="#1f3b2d" />
+              )}
+              <Circle x={seg.end.x} y={seg.end.y} radius={5} fill="#1f3b2d" />
+            </Group>
+          ))}
+          {pendingPoint && segments.length === 0 && (
+            <Group>
+              <Circle
+                x={pendingPoint.x}
+                y={pendingPoint.y}
+                radius={8}
+                fill="#1f3b2d"
+              />
+              <Circle
+                x={pendingPoint.x}
+                y={pendingPoint.y}
+                radius={14}
+                stroke="#447a5e"
+                strokeWidth={2}
+                opacity={0.5}
+              />
+            </Group>
+          )}
+        </Layer>
+      </Stage>
+      <CanvasOverlay />
+    </div>
+  );
+}
+
+function GhostLengthLabel({
+  ax,
+  ay,
+  bx,
+  by,
+}: {
+  ax: number;
+  ay: number;
+  bx: number;
+  by: number;
+}) {
+  const distPx = Math.hypot(bx - ax, by - ay);
+  if (distPx < 30) return null;
+  const mx = (ax + bx) / 2;
+  const my = (ay + by) / 2;
+  return (
+    <Text
+      x={mx + 8}
+      y={my - 18}
+      text={`${distPx.toFixed(0)} px`}
+      fontSize={11}
+      fill="#447a5e"
+      listening={false}
+    />
+  );
+}
+
+function CanvasOverlay() {
+  const { t } = useTranslation();
+  const segments = useProject((s) => s.segments);
+  if (segments.length > 0) return null;
+  return (
+    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+      <div className="text-gray-400 text-sm max-w-xs text-center px-6">
+        {t("sketch.instructions")}
+      </div>
+    </div>
+  );
+}
+
+function GridLayer({ width, height }: { width: number; height: number }) {
+  const lines: React.ReactNode[] = [];
+  const STEP = 40;
+  for (let x = 0; x <= width; x += STEP) {
+    lines.push(
+      <div
+        key={`v${x}`}
+        style={{ position: "absolute", left: x, top: 0, width: 1, height, background: "#eef0ec" }}
+      />
+    );
+  }
+  for (let y = 0; y <= height; y += STEP) {
+    lines.push(
+      <div
+        key={`h${y}`}
+        style={{ position: "absolute", top: y, left: 0, height: 1, width, background: "#eef0ec" }}
+      />
+    );
+  }
+  return <div className="absolute inset-0 pointer-events-none">{lines}</div>;
+}
+
+interface SegProps {
+  seg: Segment;
+  modules: FenceModule[];
+  selected: boolean;
+  hovered: boolean;
+  selectedModuleId: string | null;
+  onHover: (h: boolean) => void;
+  onClickSegment: () => void;
+  onClickModule: (id: string) => void;
+}
+
+function SegmentNode({
+  seg,
+  modules,
+  selected,
+  hovered,
+  selectedModuleId,
+  onHover,
+  onClickSegment,
+  onClickModule,
+}: SegProps) {
+  const dx = seg.end.x - seg.start.x;
+  const dy = seg.end.y - seg.start.y;
+  const len = Math.hypot(dx, dy);
+  if (len === 0) return null;
+  const ux = dx / len;
+  const uy = dy / len;
+  const nx = -uy;
+  const ny = ux;
+  const angleDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
+
+  const stroke = selected ? "#1f3b2d" : hovered ? "#447a5e" : "#94a3b8";
+  const strokeWidth = selected || hovered ? 6 : 4;
+
+  const realLen = seg.realLengthMm;
+  const usedMm = modules.reduce((s, m) => s + m.width, 0);
+  const remaining = Math.max(0, realLen - usedMm);
+
+  const offsetX = nx * SEGMENT_OFFSET;
+  const offsetY = ny * SEGMENT_OFFSET;
+
+  let acc = 0;
+  const moduleBlocks = modules.map((m) => {
+    const ratio = m.width / realLen;
+    const startRatio = acc / realLen;
+    acc += m.width;
+    return { m, ratio, startRatio };
+  });
+
+  const remainingRatio = remaining / realLen;
+  const remainingStartRatio = acc / realLen;
+
+  return (
+    <Group>
+      <Line
+        points={[seg.start.x, seg.start.y, seg.end.x, seg.end.y]}
+        stroke={stroke}
+        strokeWidth={strokeWidth}
+        lineCap="round"
+        onMouseEnter={() => onHover(true)}
+        onMouseLeave={() => onHover(false)}
+        onClick={(e) => {
+          e.cancelBubble = true;
+          onClickSegment();
+        }}
+        hitStrokeWidth={20}
+      />
+
+      <Group
+        x={seg.start.x + offsetX}
+        y={seg.start.y + offsetY}
+        rotation={angleDeg}
+      >
+        {remainingRatio > 0 && (
+          <Rect
+            x={remainingStartRatio * len}
+            y={-12}
+            width={remainingRatio * len}
+            height={24}
+            fill="#e2e8f0"
+            stroke="#cbd5e1"
+            strokeWidth={1}
+            cornerRadius={2}
+          />
+        )}
+
+        {moduleBlocks.map(({ m, ratio, startRatio }) => {
+          const blockX = startRatio * len;
+          const blockW = ratio * len;
+          const isSelected = m.id === selectedModuleId;
+          const colors: Record<string, string> = {
+            panel: "#94a3b8",
+            small_gate: "#fbbf24",
+            swing_gate: "#f97316",
+            sliding_gate: "#3b82f6",
+            cantilever_gate: "#8b5cf6",
+          };
+          return (
+            <Group
+              key={m.id}
+              onClick={(e) => {
+                e.cancelBubble = true;
+                onClickModule(m.id);
+              }}
+            >
+              <Rect
+                x={blockX}
+                y={-14}
+                width={Math.max(8, blockW)}
+                height={28}
+                fill={colors[m.kind]}
+                stroke={isSelected ? "#0e1f17" : "#1f2937"}
+                strokeWidth={isSelected ? 2.5 : 1}
+                cornerRadius={3}
+                opacity={0.92}
+              />
+              {blockW > 50 && (
+                <Text
+                  x={blockX + 4}
+                  y={-6}
+                  text={kindLabel(m.kind)}
+                  fontSize={10}
+                  fill="white"
+                  width={blockW - 8}
+                  ellipsis
+                  wrap="none"
+                />
+              )}
+            </Group>
+          );
+        })}
+
+        <Text
+          x={0}
+          y={-32}
+          text={`${(realLen / 1000).toFixed(2)} m`}
+          fontSize={12}
+          fill={selected ? "#1f3b2d" : "#475569"}
+          fontStyle="bold"
+        />
+      </Group>
+    </Group>
+  );
+}
+
+function kindLabel(k: FenceModule["kind"]) {
+  switch (k) {
+    case "panel":
+      return "Panou";
+    case "small_gate":
+      return "Portiță";
+    case "swing_gate":
+      return "Batantă";
+    case "sliding_gate":
+      return "Glisantă";
+    case "cantilever_gate":
+      return "Autoport.";
+  }
+}
+
+export function useResizeObserver(ref: React.RefObject<HTMLElement | null>) {
+  const [size, setSize] = useState({ width: 600, height: 400 });
+  useEffect(() => {
+    if (!ref.current) return;
+    const el = ref.current;
+    const ro = new ResizeObserver((entries) => {
+      for (const e of entries) {
+        const { width, height } = e.contentRect;
+        setSize({ width: Math.max(100, width), height: Math.max(100, height) });
+      }
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref]);
+  return size;
+}

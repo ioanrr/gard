@@ -1,0 +1,98 @@
+{
+  "app": {
+    "title": "Harmonya — Kerítés- és kapukalkulátor",
+    "subtitle": "Rajzolj, konfigurálj, kapj árajánlatot"
+  },
+  "nav": {
+    "sketch": "Vázlat",
+    "modules": "Modulok",
+    "quote": "Árajánlat",
+    "cutting": "Vágási terv"
+  },
+  "lang": {
+    "ro": "Română",
+    "hu": "Magyar"
+  },
+  "view": {
+    "client": "Ügyfél nézet",
+    "internal": "Belső nézet"
+  },
+  "sketch": {
+    "instructions": "Kattints a vászonra pontok hozzáadásához. Dupla kattintás a kerület lezárásához. Kattints egy szakaszra a hosszának beállításához.",
+    "clear": "Minden törlése",
+    "undo": "Vissza",
+    "close": "Kerület zárása",
+    "addSegment": "Rajz mód",
+    "select": "Kijelölés mód",
+    "scale": "Méretarány",
+    "totalLength": "Teljes hossz",
+    "segmentLength": "Szakasz hossza (mm)",
+    "addModule": "Modul hozzáadása ehhez a szakaszhoz",
+    "noSegmentSelected": "Nincs szakasz kijelölve",
+    "segmentSelected": "Kijelölt szakasz"
+  },
+  "modules": {
+    "panel": "Kerítéspanel",
+    "small_gate": "Kiskapu",
+    "swing_gate": "Nyíló kapu",
+    "sliding_gate": "Toló kapu",
+    "cantilever_gate": "Önhordó toló kapu",
+    "auto_panels": "Automatikus panelek",
+    "remove": "Modul törlése",
+    "config": "Modul beállítása",
+    "width": "Szélesség (mm)",
+    "height": "Magasság (mm)",
+    "color": "Szín",
+    "secondaryColor": "Másodlagos szín",
+    "infillType": "Kitöltés típusa",
+    "slatWidth": "Léc szélessége (mm)",
+    "secondarySlatWidth": "Másodlagos szélesség (mm)",
+    "gap": "Hézag (mm)",
+    "orientation": "Tájolás",
+    "horizontal": "Vízszintes",
+    "vertical": "Függőleges",
+    "noModuleSelected": "Válassz ki egy modult a konfiguráláshoz",
+    "infill": {
+      "solid": "Tömör (hézag nélkül)",
+      "slatted": "Hézagos",
+      "slatted_secondary": "Hézagos + másodlagos szélesség"
+    }
+  },
+  "quote": {
+    "title": "Árajánlat",
+    "client": "Ügyfél",
+    "date": "Dátum",
+    "item": "Termék / szolgáltatás",
+    "qty": "Mennyiség",
+    "unit": "M.E.",
+    "unitPrice": "Egységár",
+    "total": "Összesen",
+    "subtotal": "Részösszeg",
+    "vat": "ÁFA (19%)",
+    "grandTotal": "Végösszeg ÁFÁ-val",
+    "currency": "RON",
+    "exportPdf": "Árajánlat PDF",
+    "empty": "Adj hozzá modulokat az árajánlathoz"
+  },
+  "cutting": {
+    "title": "Vágási terv",
+    "subtitle": "6000 mm-es szálak, minimális hulladékra optimalizálva",
+    "profile": "Profil",
+    "color": "Szín",
+    "barNo": "Szál #",
+    "cuts": "Vágások (mm)",
+    "waste": "Hulladék (mm)",
+    "totalBars": "Összes szál",
+    "totalWaste": "Összes hulladék",
+    "wasteRatio": "Hulladék arány",
+    "exportPdf": "Vágási terv PDF",
+    "empty": "Adj hozzá modulokat a vágási tervhez"
+  },
+  "summary": {
+    "title": "Projekt összegzés",
+    "modules": "Modulok",
+    "totalLength": "Teljes hossz",
+    "panels": "Panelek",
+    "gates": "Kapuk"
+  }
+}

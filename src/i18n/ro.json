@@ -1,0 +1,98 @@
+{
+  "app": {
+    "title": "Harmonya — Calculator gard & poartă",
+    "subtitle": "Desenează, configurează, primește oferta"
+  },
+  "nav": {
+    "sketch": "Schiță",
+    "modules": "Module",
+    "quote": "Ofertă",
+    "cutting": "Plan tăiere"
+  },
+  "lang": {
+    "ro": "Română",
+    "hu": "Magyar"
+  },
+  "view": {
+    "client": "Vedere client",
+    "internal": "Vedere internă"
+  },
+  "sketch": {
+    "instructions": "Click pe canvas pentru a adăuga puncte. Dublu-click pentru a închide perimetrul. Click pe un segment pentru a-i seta lungimea.",
+    "clear": "Șterge tot",
+    "undo": "Înapoi",
+    "close": "Închide perimetrul",
+    "addSegment": "Mod desen",
+    "select": "Mod selecție",
+    "scale": "Scară",
+    "totalLength": "Lungime totală",
+    "segmentLength": "Lungimea segmentului (mm)",
+    "addModule": "Adaugă modul pe acest segment",
+    "noSegmentSelected": "Niciun segment selectat",
+    "segmentSelected": "Segment selectat"
+  },
+  "modules": {
+    "panel": "Panou gard",
+    "small_gate": "Portiță",
+    "swing_gate": "Poartă batantă",
+    "sliding_gate": "Poartă glisantă",
+    "cantilever_gate": "Poartă autoportantă",
+    "auto_panels": "Panouri auto-generate",
+    "remove": "Șterge modul",
+    "config": "Configurare modul",
+    "width": "Lățime (mm)",
+    "height": "Înălțime (mm)",
+    "color": "Culoare",
+    "secondaryColor": "Culoare secundară",
+    "infillType": "Tip umplere",
+    "slatWidth": "Lățime șipci (mm)",
+    "secondarySlatWidth": "Lățime secundară (mm)",
+    "gap": "Spațiere (mm)",
+    "orientation": "Orientare",
+    "horizontal": "Orizontală",
+    "vertical": "Verticală",
+    "noModuleSelected": "Selectează un modul pentru a-l configura",
+    "infill": {
+      "solid": "Solid (fără spațiu)",
+      "slatted": "Cu spațiere",
+      "slatted_secondary": "Spațiere + lățime secundară"
+    }
+  },
+  "quote": {
+    "title": "Ofertă de preț",
+    "client": "Client",
+    "date": "Data",
+    "item": "Produs / serviciu",
+    "qty": "Cantitate",
+    "unit": "U.M.",
+    "unitPrice": "Preț unitar",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "vat": "TVA (19%)",
+    "grandTotal": "Total cu TVA",
+    "currency": "RON",
+    "exportPdf": "Export PDF ofertă",
+    "empty": "Adaugă module pentru a genera oferta"
+  },
+  "cutting": {
+    "title": "Plan de tăiere",
+    "subtitle": "Bare 6000 mm, optimizate pentru rebut minim",
+    "profile": "Profil",
+    "color": "Culoare",
+    "barNo": "Bară #",
+    "cuts": "Tăieri (mm)",
+    "waste": "Rebut (mm)",
+    "totalBars": "Total bare",
+    "totalWaste": "Rebut total",
+    "wasteRatio": "Procent rebut",
+    "exportPdf": "Export PDF plan tăiere",
+    "empty": "Adaugă module pentru a genera planul de tăiere"
+  },
+  "summary": {
+    "title": "Sumar proiect",
+    "modules": "Module",
+    "totalLength": "Lungime totală",
+    "panels": "Panouri",
+    "gates": "Porți"
+  }
+}
