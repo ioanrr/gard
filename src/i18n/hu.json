@@ -1,7 +1,7 @@
 {
   "app": {
     "title": "Kerítés- és kapukalkulátor",
-    "titleHint": "projekt frissítése - minden adat elveszik",
+    "titleHint": "új projekt indítása - minden adat elveszik",
     "subtitle": "Rajzolj, konfigurálj, kapj árajánlatot"
   },
   "nav": {

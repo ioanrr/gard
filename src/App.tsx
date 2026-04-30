@@ -31,14 +31,13 @@ function App() {
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="hover:underline focus:outline-none focus:underline"
-              title={t("app.titleHint")}
+              className="group relative hover:underline focus:outline-none focus:underline cursor-pointer"
             >
               {t("app.title")}
+              <span className="pointer-events-none absolute left-0 top-full mt-1 whitespace-nowrap text-[11px] font-normal bg-brand-900 text-brand-100/90 px-2 py-1 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity">
+                ({t("app.titleHint")})
+              </span>
             </button>
-            <span className="text-[11px] font-normal text-brand-100/70">
-              ({t("app.titleHint")})
-            </span>
             <span className="text-[10px] font-mono px-1.5 py-0.5 bg-brand-700/60 text-brand-100 rounded">
               {APP_VERSION}
             </span>
