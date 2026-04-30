@@ -28,7 +28,17 @@ function App() {
       <header className="h-14 bg-brand-900 text-white flex items-center px-5 justify-between shrink-0">
         <div>
           <div className="text-base font-semibold tracking-tight flex items-center gap-2">
-            <span>{t("app.title")}</span>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="hover:underline focus:outline-none focus:underline"
+              title={t("app.titleHint")}
+            >
+              {t("app.title")}
+            </button>
+            <span className="text-[11px] font-normal text-brand-100/70">
+              ({t("app.titleHint")})
+            </span>
             <span className="text-[10px] font-mono px-1.5 py-0.5 bg-brand-700/60 text-brand-100 rounded">
               {APP_VERSION}
             </span>

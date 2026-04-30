@@ -1,6 +1,7 @@
 {
   "app": {
-    "title": "Harmonya — Calculator gard & poartă",
+    "title": "Calculator gard & poartă",
+    "titleHint": "actualizează proiectul - toate datele se pierd",
     "subtitle": "Desenează, configurează, primește oferta"
   },
   "nav": {

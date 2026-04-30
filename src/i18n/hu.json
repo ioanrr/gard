@@ -1,6 +1,7 @@
 {
   "app": {
-    "title": "Harmonya — Kerítés- és kapukalkulátor",
+    "title": "Kerítés- és kapukalkulátor",
+    "titleHint": "projekt frissítése - minden adat elveszik",
     "subtitle": "Rajzolj, konfigurálj, kapj árajánlatot"
   },
   "nav": {
