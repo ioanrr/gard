@@ -93,6 +93,9 @@
     "exportPdf": "Export PDF plan tăiere",
     "empty": "Adaugă module pentru a genera planul de tăiere"
   },
+  "elevation": {
+    "title": "Vedere din față — segment selectat"
+  },
   "summary": {
     "title": "Sumar proiect",
     "modules": "Module",

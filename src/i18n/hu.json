@@ -93,6 +93,9 @@
     "exportPdf": "Vágási terv PDF",
     "empty": "Adj hozzá modulokat a vágási tervhez"
   },
+  "elevation": {
+    "title": "Elölnézet — kijelölt szakasz"
+  },
   "summary": {
     "title": "Projekt összegzés",
     "modules": "Modulok",

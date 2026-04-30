@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SketchCanvas, useResizeObserver } from "./components/Canvas/SketchCanvas";
 import { CanvasToolbar } from "./components/Canvas/CanvasToolbar";
+import { SegmentElevation } from "./components/Canvas/SegmentElevation";
 import { SegmentPanel } from "./components/Sidebar/SegmentPanel";
 import { ModuleConfig } from "./components/Sidebar/ModuleConfig";
 import { ProjectSummary } from "./components/Sidebar/ProjectSummary";
@@ -91,6 +92,7 @@ function App() {
                 <CanvasToolbar />
                 <div ref={canvasContainerRef} className="flex-1 relative">
                   <SketchCanvas width={width} height={height} />
+                  <SegmentElevation />
                 </div>
               </div>
             )}
