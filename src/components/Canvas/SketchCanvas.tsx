@@ -84,14 +84,6 @@ export function SketchCanvas({ width, height }: Props) {
               opacity={0.85}
             />
           )}
-          {showGhost && (
-            <GhostLengthLabel
-              ax={anchor!.x}
-              ay={anchor!.y}
-              bx={cursor!.x}
-              by={cursor!.y}
-            />
-          )}
           {segments.map((seg) => (
             <SegmentNode
               key={seg.id}
@@ -136,33 +128,6 @@ export function SketchCanvas({ width, height }: Props) {
       </Stage>
       <CanvasOverlay />
     </div>
-  );
-}
-
-function GhostLengthLabel({
-  ax,
-  ay,
-  bx,
-  by,
-}: {
-  ax: number;
-  ay: number;
-  bx: number;
-  by: number;
-}) {
-  const distPx = Math.hypot(bx - ax, by - ay);
-  if (distPx < 30) return null;
-  const mx = (ax + bx) / 2;
-  const my = (ay + by) / 2;
-  return (
-    <Text
-      x={mx + 8}
-      y={my - 18}
-      text={`${distPx.toFixed(0)} px`}
-      fontSize={11}
-      fill="#447a5e"
-      listening={false}
-    />
   );
 }
 

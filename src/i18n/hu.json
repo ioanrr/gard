@@ -25,7 +25,7 @@
     "close": "Kerület zárása",
     "finish": "Rajz befejezése",
     "addSegment": "Rajz mód",
-    "select": "Kijelölés mód",
+    "select": "Elemek hozzáadása",
     "scale": "Méretarány",
     "totalLength": "Teljes hossz",
     "segmentLength": "Szakasz hossza (mm)",
@@ -56,7 +56,7 @@
     "noModuleSelected": "Válassz ki egy modult a konfiguráláshoz",
     "position": "Pozíció a szakaszon",
     "distFromStart": "Távolság a bal végtől (mm)",
-    "backToSegment": "Vissza a szakaszhoz / új modul hozzáadása",
+    "backToSegment": "+ Új elem hozzáadása",
     "infill": {
       "solid": "Tömör (hézag nélkül)",
       "slatted": "Hézagos",

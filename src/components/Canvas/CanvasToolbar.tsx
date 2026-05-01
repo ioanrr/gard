@@ -32,35 +32,31 @@ export function CanvasToolbar() {
             : "bg-gray-100 text-gray-700 hover:bg-gray-200"
         }`}
         onClick={() => setDrawMode("select")}
+        disabled={segCount === 0}
       >
         {t("sketch.select")}
       </button>
-      <div className="w-px h-6 bg-gray-200 mx-1" />
-      <button
-        type="button"
-        className="px-3 py-1.5 rounded text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-        onClick={undo}
-        disabled={segCount === 0}
-      >
-        {t("sketch.undo")}
-      </button>
-      <button
-        type="button"
-        className="px-3 py-1.5 rounded text-sm bg-brand-50 text-brand-900 border border-brand-200 hover:bg-brand-100 disabled:opacity-50"
-        onClick={() => setDrawMode("select")}
-        disabled={segCount === 0 || drawMode === "select"}
-        title={t("sketch.finish")}
-      >
-        ✓ {t("sketch.finish")}
-      </button>
-      <button
-        type="button"
-        className="px-3 py-1.5 rounded text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-        onClick={closePerimeter}
-        disabled={segCount < 2 || closed}
-      >
-        {t("sketch.close")}
-      </button>
+      {drawMode === "draw" && (
+        <>
+          <div className="w-px h-6 bg-gray-200 mx-1" />
+          <button
+            type="button"
+            className="px-3 py-1.5 rounded text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+            onClick={undo}
+            disabled={segCount === 0}
+          >
+            {t("sketch.undo")}
+          </button>
+          <button
+            type="button"
+            className="px-3 py-1.5 rounded text-sm bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+            onClick={closePerimeter}
+            disabled={segCount < 2 || closed}
+          >
+            {t("sketch.close")}
+          </button>
+        </>
+      )}
       <div className="flex-1" />
       <button
         type="button"

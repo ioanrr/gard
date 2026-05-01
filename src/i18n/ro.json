@@ -25,7 +25,7 @@
     "close": "Închide perimetrul",
     "finish": "Termină desenul",
     "addSegment": "Mod desen",
-    "select": "Mod selecție",
+    "select": "Adaugă elemente",
     "scale": "Scară",
     "totalLength": "Lungime totală",
     "segmentLength": "Lungimea segmentului (mm)",
@@ -56,7 +56,7 @@
     "noModuleSelected": "Selectează un modul pentru a-l configura",
     "position": "Poziție pe segment",
     "distFromStart": "Distanță de la capătul stâng (mm)",
-    "backToSegment": "Înapoi la segment / adaugă alt modul",
+    "backToSegment": "+ Adaugă alt element",
     "infill": {
       "solid": "Solid (fără spațiu)",
       "slatted": "Cu spațiere",

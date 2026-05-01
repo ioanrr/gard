@@ -34,9 +34,9 @@ export function ModuleConfig() {
         <button
           type="button"
           onClick={() => selectSegment(segment.id)}
-          className="w-full text-left text-xs text-brand-700 hover:text-brand-900 hover:bg-brand-50 px-2 py-1.5 rounded border border-brand-100"
+          className="w-full text-center text-base font-semibold text-white bg-brand-700 hover:bg-brand-900 px-3 py-3 rounded shadow-sm transition-colors"
         >
-          ← {t("modules.backToSegment")} ({(segLen / 1000).toFixed(2)} m)
+          {t("modules.backToSegment")}
         </button>
       )}
       <div className="flex items-center justify-between">
