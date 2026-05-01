@@ -4,11 +4,13 @@ import { useProject } from "../store/projectStore";
 import {
   generateSuggestions,
   computeSubtotal,
-  type Suggestion,
   type PackageSuggestion,
   type SingleSuggestion,
   type SuggestionMove,
 } from "../engine/suggestions";
+
+const TOLERANCE_OPTIONS = [5, 7, 10, 15, 20, 100] as const;
+const DEFAULT_TOLERANCE = 10;
 
 export function SuggestionsView({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
@@ -16,30 +18,68 @@ export function SuggestionsView({ onClose }: { onClose: () => void }) {
   const modules = useProject((s) => s.modules);
   const update = useProject((s) => s.updateModule);
 
-  const [snapshot] = useState(() => {
-    const baseCost = computeSubtotal({ segments, modules });
-    const suggestions = generateSuggestions({ segments, modules });
-    return { baseCost, suggestions };
+  const [tolerance, setTolerance] = useState<number>(DEFAULT_TOLERANCE);
+
+  const [originalSnapshot] = useState(() => {
+    const map: Record<string, number> = {};
+    for (const m of modules) {
+      if (!m.id.startsWith("auto_")) map[m.id] = m.positionMm;
+    }
+    return map;
   });
+
+  const baselineModules = useMemo(
+    () =>
+      modules.map((m) =>
+        originalSnapshot[m.id] !== undefined
+          ? { ...m, positionMm: originalSnapshot[m.id] }
+          : m
+      ),
+    [modules, originalSnapshot]
+  );
+
+  const snapshot = useMemo(() => {
+    const baseCost = computeSubtotal({ segments, modules: baselineModules });
+    const suggestions = generateSuggestions(
+      { segments, modules: baselineModules },
+      { toleranceFraction: tolerance / 100 }
+    );
+    return { baseCost, suggestions };
+  }, [segments, baselineModules, tolerance]);
+
+  const toleranceSelector = (
+    <div className="bg-white border border-gray-200 rounded p-3">
+      <div className="text-[11px] uppercase tracking-wide text-gray-600 font-semibold mb-2">
+        {t("suggestions.toleranceLabel")}
+      </div>
+      <div className="grid grid-cols-3 gap-1">
+        {TOLERANCE_OPTIONS.map((pct) => (
+          <button
+            key={pct}
+            type="button"
+            onClick={() => setTolerance(pct)}
+            className={`px-2 py-1.5 text-xs font-medium rounded border ${
+              tolerance === pct
+                ? "bg-brand-700 text-white border-brand-700"
+                : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+            }`}
+          >
+            {pct >= 100 ? t("suggestions.toleranceUnlimited") : `±${pct}%`}
+          </button>
+        ))}
+      </div>
+      <div className="text-[11px] text-gray-500 mt-2">
+        {t("suggestions.toleranceHint")}
+      </div>
+    </div>
+  );
 
   if (segments.length === 0) {
     return (
       <SuggestionsLayout onClose={onClose} title={t("suggestions.title")}>
-        <div className="p-4 text-sm text-gray-500">{t("suggestions.empty")}</div>
-      </SuggestionsLayout>
-    );
-  }
-
-  if (snapshot.suggestions.length === 0) {
-    return (
-      <SuggestionsLayout onClose={onClose} title={t("suggestions.title")}>
-        <div className="p-4 space-y-2">
-          <div className="text-sm text-brand-900 font-medium">
-            {t("suggestions.alreadyOptimal")}
-          </div>
-          <div className="text-xs text-gray-500">
-            {t("suggestions.baseCost")}: {snapshot.baseCost.toFixed(2)} RON
-          </div>
+        <div className="p-3 space-y-3">
+          {toleranceSelector}
+          <div className="text-sm text-gray-500">{t("suggestions.empty")}</div>
         </div>
       </SuggestionsLayout>
     );
@@ -48,6 +88,8 @@ export function SuggestionsView({ onClose }: { onClose: () => void }) {
   return (
     <SuggestionsLayout onClose={onClose} title={t("suggestions.title")}>
       <div className="p-3 space-y-3">
+        {toleranceSelector}
+
         <div className="bg-brand-50 border border-brand-200 rounded p-3">
           <div className="text-[11px] text-brand-700 uppercase tracking-wide font-semibold">
             {t("suggestions.baseCost")}
@@ -57,21 +99,27 @@ export function SuggestionsView({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        {snapshot.suggestions.map((s, i) =>
-          s.type === "package" ? (
-            <PackageCard
-              key={i}
-              suggestion={s}
-              modules={modules}
-              update={update}
-            />
-          ) : (
-            <SingleCard
-              key={i}
-              suggestion={s}
-              modules={modules}
-              update={update}
-            />
+        {snapshot.suggestions.length === 0 ? (
+          <div className="text-sm text-brand-900 bg-emerald-50 border border-emerald-200 rounded p-3">
+            {t("suggestions.alreadyOptimal")}
+          </div>
+        ) : (
+          snapshot.suggestions.map((s, i) =>
+            s.type === "package" ? (
+              <PackageCard
+                key={i}
+                suggestion={s}
+                modules={modules}
+                update={update}
+              />
+            ) : (
+              <SingleCard
+                key={i}
+                suggestion={s}
+                modules={modules}
+                update={update}
+              />
+            )
           )
         )}
       </div>

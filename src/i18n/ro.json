@@ -108,7 +108,10 @@
     "revertAll": "Anulează toate sugestiile",
     "close": "Ieși din sugestii",
     "package": "Pachet de optimizări",
-    "packageHint": "Mută {{count}} elemente împreună pentru rezultatul cel mai eficient"
+    "packageHint": "Mută elementele împreună pentru rezultatul cel mai eficient",
+    "toleranceLabel": "Cât de mult poate fi mutat fiecare element",
+    "toleranceHint": "Procent din lungimea segmentului. Sugestiile vor căuta optime doar în acest interval în jurul poziției actuale.",
+    "toleranceUnlimited": "Fără limită"
   },
   "efficiency": {
     "label": "Eficiență tăiere"

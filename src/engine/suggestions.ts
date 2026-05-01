@@ -35,6 +35,12 @@ interface State {
   modules: FenceModule[];
 }
 
+export interface SuggestionOptions {
+  /** Max fraction of segment length each module is allowed to move from
+   *  its current position. Set to a large value (or omit) for no limit. */
+  toleranceFraction?: number;
+}
+
 const STEP_MM = 100;
 const MIN_SAVINGS_RON = 20;
 const MAX_PACKAGE_ITERATIONS = 6;
@@ -74,7 +80,9 @@ function userModules(state: State): FenceModule[] {
 function bestPositionFor(
   m: FenceModule,
   workingModules: FenceModule[],
-  state: State
+  state: State,
+  origPosMm: number,
+  options: SuggestionOptions
 ): { pos: number; cost: number } {
   const segment = state.segments.find((s) => s.id === m.segmentId);
   if (!segment) return { pos: m.positionMm, cost: Infinity };
@@ -87,10 +95,18 @@ function bestPositionFor(
   );
   const maxStart = Math.max(0, segment.realLengthMm - m.width);
 
+  const tolMm =
+    options.toleranceFraction != null && options.toleranceFraction < 1
+      ? options.toleranceFraction * segment.realLengthMm
+      : Infinity;
+  const minP = Math.max(0, origPosMm - tolMm);
+  const maxP = Math.min(maxStart, origPosMm + tolMm);
+
   let bestPos = m.positionMm;
   let bestCost = computeSubtotal({ ...state, modules: workingModules });
 
-  for (let p = 0; p <= maxStart; p += STEP_MM) {
+  const startStep = Math.ceil(minP / STEP_MM) * STEP_MM;
+  for (let p = startStep; p <= maxP; p += STEP_MM) {
     if (p === m.positionMm) continue;
     if (isOverlap(p, m.width, others)) continue;
     const trial = workingModules.map((x) =>
@@ -105,7 +121,10 @@ function bestPositionFor(
   return { pos: bestPos, cost: bestCost };
 }
 
-export function generateSuggestions(state: State): Suggestion[] {
+export function generateSuggestions(
+  state: State,
+  options: SuggestionOptions = {}
+): Suggestion[] {
   const baseCost = computeSubtotal(state);
   if (baseCost === 0) return [];
 
@@ -114,7 +133,7 @@ export function generateSuggestions(state: State): Suggestion[] {
 
   if (us.length === 1) {
     const m = us[0];
-    const result = bestPositionFor(m, state.modules, state);
+    const result = bestPositionFor(m, state.modules, state, m.positionMm, options);
     if (result.pos !== m.positionMm && baseCost - result.cost >= MIN_SAVINGS_RON) {
       return [
         {
@@ -135,6 +154,7 @@ export function generateSuggestions(state: State): Suggestion[] {
     return [];
   }
 
+  const origPos = new Map(us.map((m) => [m.id, m.positionMm]));
   let workingModules = state.modules.map((m) => ({ ...m }));
   let workingCost = baseCost;
   let improved = true;
@@ -143,7 +163,8 @@ export function generateSuggestions(state: State): Suggestion[] {
     improved = false;
     iter++;
     for (const m of workingModules.filter((x) => !x.id.startsWith("auto_"))) {
-      const result = bestPositionFor(m, workingModules, state);
+      const orig = origPos.get(m.id) ?? m.positionMm;
+      const result = bestPositionFor(m, workingModules, state, orig, options);
       if (result.pos !== m.positionMm && result.cost < workingCost - 1) {
         workingModules = workingModules.map((x) =>
           x.id === m.id ? { ...x, positionMm: result.pos } : x
