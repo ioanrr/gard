@@ -34,6 +34,67 @@ interface ProjectState {
 const SEG_MIN_LENGTH = 100;
 const DEFAULT_PX_PER_MM = 0.05;
 
+export function userModulesOnSegment(
+  modules: FenceModule[],
+  segmentId: string,
+  excludeId?: string
+): FenceModule[] {
+  return modules.filter(
+    (m) =>
+      m.segmentId === segmentId &&
+      !m.id.startsWith("auto_") &&
+      m.id !== excludeId
+  );
+}
+
+export function isOverlap(
+  posMm: number,
+  widthMm: number,
+  others: FenceModule[]
+): boolean {
+  const aStart = posMm;
+  const aEnd = posMm + widthMm;
+  for (const o of others) {
+    const bStart = o.positionMm;
+    const bEnd = o.positionMm + o.width;
+    if (aStart < bEnd && bStart < aEnd) return true;
+  }
+  return false;
+}
+
+export function clampPosition(
+  desiredMm: number,
+  widthMm: number,
+  segLengthMm: number,
+  others: FenceModule[]
+): number {
+  const maxStart = Math.max(0, segLengthMm - widthMm);
+  const wanted = Math.max(0, Math.min(maxStart, desiredMm));
+  if (!isOverlap(wanted, widthMm, others)) return wanted;
+
+  const sorted = [...others].sort((a, b) => a.positionMm - b.positionMm);
+  const gaps: { start: number; end: number }[] = [];
+  let cursor = 0;
+  for (const o of sorted) {
+    if (o.positionMm > cursor) gaps.push({ start: cursor, end: o.positionMm });
+    cursor = Math.max(cursor, o.positionMm + o.width);
+  }
+  if (cursor < segLengthMm) gaps.push({ start: cursor, end: segLengthMm });
+
+  let bestPos = wanted;
+  let bestDist = Infinity;
+  for (const g of gaps) {
+    if (g.end - g.start < widthMm) continue;
+    const candidate = Math.max(g.start, Math.min(g.end - widthMm, wanted));
+    const dist = Math.abs(candidate - wanted);
+    if (dist < bestDist) {
+      bestDist = dist;
+      bestPos = candidate;
+    }
+  }
+  return bestPos;
+}
+
 export const useProject = create<ProjectState>((set, get) => {
   return {
     segments: [],
@@ -142,17 +203,31 @@ export const useProject = create<ProjectState>((set, get) => {
     addModuleToSegment: (segmentId, kind) => {
       const seg = get().segments.find((s) => s.id === segmentId);
       if (!seg) return;
-      const existing = get().modules.filter((x) => x.segmentId === segmentId);
-      const usedSpan = existing.reduce((s, m) => Math.max(s, m.positionMm + m.width), 0);
-      const m = defaultModule(kind, segmentId, usedSpan);
-      const maxStart = Math.max(0, seg.realLengthMm - m.width);
-      m.positionMm = Math.min(m.positionMm, maxStart);
+      const m = defaultModule(kind, segmentId, 0);
+      const others = userModulesOnSegment(get().modules, segmentId);
+      m.positionMm = clampPosition(0, m.width, seg.realLengthMm, others);
       set({ modules: [...get().modules, m], selectedModuleId: m.id });
     },
 
     updateModule: (id, patch) =>
       set({
-        modules: get().modules.map((m) => (m.id === id ? { ...m, ...patch } : m)),
+        modules: get().modules.map((m) => {
+          if (m.id !== id) return m;
+          const merged = { ...m, ...patch };
+          if (patch.positionMm !== undefined || patch.width !== undefined) {
+            const seg = get().segments.find((s) => s.id === merged.segmentId);
+            if (seg) {
+              const others = userModulesOnSegment(get().modules, merged.segmentId, id);
+              merged.positionMm = clampPosition(
+                merged.positionMm,
+                merged.width,
+                seg.realLengthMm,
+                others
+              );
+            }
+          }
+          return merged;
+        }),
       }),
 
     removeModule: (id) =>

@@ -106,7 +106,9 @@
     "cancel": "Visszavonás",
     "applyAll": "Összes alkalmazása",
     "revertAll": "Összes visszavonása",
-    "close": "Kilépés a javaslatokból"
+    "close": "Kilépés a javaslatokból",
+    "package": "Optimalizálási csomag",
+    "packageHint": "Mozgasd a {{count}} elemet együtt a leghatékonyabb eredményért"
   },
   "efficiency": {
     "label": "Vágási hatékonyság"

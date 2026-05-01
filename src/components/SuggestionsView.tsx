@@ -1,7 +1,14 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useProject } from "../store/projectStore";
-import { generateSuggestions, computeSubtotal } from "../engine/suggestions";
+import {
+  generateSuggestions,
+  computeSubtotal,
+  type Suggestion,
+  type PackageSuggestion,
+  type SingleSuggestion,
+  type SuggestionMove,
+} from "../engine/suggestions";
 
 export function SuggestionsView({ onClose }: { onClose: () => void }) {
   const { t } = useTranslation();
@@ -14,15 +21,6 @@ export function SuggestionsView({ onClose }: { onClose: () => void }) {
     const suggestions = generateSuggestions({ segments, modules });
     return { baseCost, suggestions };
   });
-
-  const appliedSet = useMemo(() => {
-    const set = new Set<string>();
-    for (const s of snapshot.suggestions) {
-      const mod = modules.find((m) => m.id === s.moduleId);
-      if (mod && mod.positionMm === s.toMm) set.add(s.moduleId);
-    }
-    return set;
-  }, [modules, snapshot.suggestions]);
 
   if (segments.length === 0) {
     return (
@@ -47,108 +45,167 @@ export function SuggestionsView({ onClose }: { onClose: () => void }) {
     );
   }
 
-  const totalSavingsApplied = snapshot.suggestions
-    .filter((s) => appliedSet.has(s.moduleId))
-    .reduce((sum, s) => sum + s.savings, 0);
-  const totalSavingsPotential = snapshot.suggestions.reduce(
-    (sum, s) => sum + s.savings,
-    0
-  );
-
-  const allApplied = snapshot.suggestions.every((s) => appliedSet.has(s.moduleId));
-
   return (
     <SuggestionsLayout onClose={onClose} title={t("suggestions.title")}>
       <div className="p-3 space-y-3">
         <div className="bg-brand-50 border border-brand-200 rounded p-3">
           <div className="text-[11px] text-brand-700 uppercase tracking-wide font-semibold">
-            {t("suggestions.totalSavings")}
+            {t("suggestions.baseCost")}
           </div>
-          <div className="text-xl font-bold text-brand-900">
-            ~ {totalSavingsApplied.toFixed(2)}{" "}
-            <span className="text-sm font-normal text-gray-500">
-              / {totalSavingsPotential.toFixed(2)} RON
-            </span>
-          </div>
-          <div className="text-[11px] text-gray-500 mt-0.5">
-            {t("suggestions.baseCost")}: {snapshot.baseCost.toFixed(2)} RON
+          <div className="text-base font-bold text-brand-900">
+            {snapshot.baseCost.toFixed(2)} RON
           </div>
         </div>
 
-        <div className="space-y-2">
-          {snapshot.suggestions.map((s, i) => {
-            const isApplied = appliedSet.has(s.moduleId);
-            const distMm = Math.abs(s.toMm - s.fromMm);
-            const dirRight = s.toMm > s.fromMm;
-            const dirLabel = dirRight ? t("suggestions.right") : t("suggestions.left");
-            const dirArrow = dirRight ? "→" : "←";
-            return (
-              <div
-                key={i}
-                className={`border rounded p-2.5 transition-colors ${
-                  isApplied
-                    ? "border-emerald-300 bg-emerald-50"
-                    : "border-gray-200 bg-white"
-                }`}
-              >
-                <div className="text-[13px]">
-                  <span className="font-medium">{t(`modules.${s.kind}`)}</span>
-                </div>
-                <div className="text-xs text-gray-700 mt-0.5">
-                  {dirArrow} {(distMm / 1000).toFixed(2)} m {dirLabel}
-                </div>
-                <div className="text-[11px] text-gray-500">
-                  {(s.fromMm / 1000).toFixed(2)} m → {(s.toMm / 1000).toFixed(2)} m
-                </div>
-                <div className="text-xs text-emerald-700 font-semibold mt-1">
-                  − {s.savings.toFixed(2)} RON ({((s.savings / s.baseCost) * 100).toFixed(1)}%)
-                </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (isApplied) update(s.moduleId, { positionMm: s.fromMm });
-                    else update(s.moduleId, { positionMm: s.toMm });
-                  }}
-                  className={`mt-2 w-full px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
-                    isApplied
-                      ? "bg-red-100 text-red-700 hover:bg-red-200 border border-red-300"
-                      : "bg-emerald-600 text-white hover:bg-emerald-700"
-                  }`}
-                >
-                  {isApplied ? t("suggestions.cancel") : t("suggestions.apply")}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-
-        {!allApplied ? (
-          <button
-            type="button"
-            onClick={() => {
-              for (const s of snapshot.suggestions) {
-                update(s.moduleId, { positionMm: s.toMm });
-              }
-            }}
-            className="w-full px-3 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded shadow-sm"
-          >
-            {t("suggestions.applyAll")}
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => {
-              for (const s of snapshot.suggestions) {
-                update(s.moduleId, { positionMm: s.fromMm });
-              }
-            }}
-            className="w-full px-3 py-2 text-sm font-semibold text-red-700 bg-red-100 hover:bg-red-200 border border-red-300 rounded"
-          >
-            {t("suggestions.revertAll")}
-          </button>
+        {snapshot.suggestions.map((s, i) =>
+          s.type === "package" ? (
+            <PackageCard
+              key={i}
+              suggestion={s}
+              modules={modules}
+              update={update}
+            />
+          ) : (
+            <SingleCard
+              key={i}
+              suggestion={s}
+              modules={modules}
+              update={update}
+            />
+          )
         )}
       </div>
     </SuggestionsLayout>
+  );
+}
+
+function MoveLine({ move, t }: { move: SuggestionMove; t: (k: string) => string }) {
+  const distMm = Math.abs(move.toMm - move.fromMm);
+  const dirRight = move.toMm > move.fromMm;
+  const dirLabel = dirRight ? t("suggestions.right") : t("suggestions.left");
+  const dirArrow = dirRight ? "→" : "←";
+  return (
+    <div className="text-xs">
+      <div className="font-medium text-gray-800">{t(`modules.${move.kind}`)}</div>
+      <div className="text-gray-700">
+        {dirArrow} {(distMm / 1000).toFixed(2)} m {dirLabel}
+      </div>
+      <div className="text-[11px] text-gray-500">
+        {(move.fromMm / 1000).toFixed(2)} m → {(move.toMm / 1000).toFixed(2)} m
+      </div>
+    </div>
+  );
+}
+
+function SingleCard({
+  suggestion,
+  modules,
+  update,
+}: {
+  suggestion: SingleSuggestion;
+  modules: ReturnType<typeof useProject>["modules"] extends infer T ? any : never;
+  update: (id: string, patch: any) => void;
+}) {
+  const { t } = useTranslation();
+  const m = modules.find((x: any) => x.id === suggestion.move.moduleId);
+  const isApplied =
+    m && m.positionMm === suggestion.move.toMm && m.positionMm !== suggestion.move.fromMm;
+
+  return (
+    <div
+      className={`border rounded p-2.5 transition-colors ${
+        isApplied ? "border-emerald-300 bg-emerald-50" : "border-gray-200 bg-white"
+      }`}
+    >
+      <MoveLine move={suggestion.move} t={t} />
+      <div className="text-xs text-emerald-700 font-semibold mt-1">
+        − {suggestion.savings.toFixed(2)} RON (
+        {((suggestion.savings / suggestion.baseCost) * 100).toFixed(1)}%)
+      </div>
+      <button
+        type="button"
+        onClick={() => {
+          if (isApplied)
+            update(suggestion.move.moduleId, { positionMm: suggestion.move.fromMm });
+          else
+            update(suggestion.move.moduleId, { positionMm: suggestion.move.toMm });
+        }}
+        className={`mt-2 w-full px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
+          isApplied
+            ? "bg-red-100 text-red-700 hover:bg-red-200 border border-red-300"
+            : "bg-emerald-600 text-white hover:bg-emerald-700"
+        }`}
+      >
+        {isApplied ? t("suggestions.cancel") : t("suggestions.apply")}
+      </button>
+    </div>
+  );
+}
+
+function PackageCard({
+  suggestion,
+  modules,
+  update,
+}: {
+  suggestion: PackageSuggestion;
+  modules: any[];
+  update: (id: string, patch: any) => void;
+}) {
+  const { t } = useTranslation();
+
+  const allApplied = useMemo(
+    () =>
+      suggestion.moves.every((mv) => {
+        const m = modules.find((x: any) => x.id === mv.moduleId);
+        return m && m.positionMm === mv.toMm;
+      }),
+    [modules, suggestion.moves]
+  );
+
+  return (
+    <div
+      className={`border-2 rounded-lg p-3 transition-colors ${
+        allApplied ? "border-emerald-400 bg-emerald-50" : "border-amber-300 bg-amber-50"
+      }`}
+    >
+      <div className="text-[11px] uppercase tracking-wide font-bold text-amber-800 mb-1">
+        ⭑ {t("suggestions.package")}
+      </div>
+      <div className="text-xs text-gray-700 mb-2">
+        {t("suggestions.packageHint", { count: suggestion.moves.length })}
+      </div>
+      <div className="space-y-2 mb-2 bg-white rounded p-2 border border-amber-200">
+        {suggestion.moves.map((mv, idx) => (
+          <div
+            key={mv.moduleId}
+            className={idx > 0 ? "pt-2 border-t border-gray-100" : ""}
+          >
+            <MoveLine move={mv} t={t} />
+          </div>
+        ))}
+      </div>
+      <div className="text-sm text-emerald-700 font-bold">
+        − {suggestion.savings.toFixed(2)} RON (
+        {((suggestion.savings / suggestion.baseCost) * 100).toFixed(1)}%)
+      </div>
+      <button
+        type="button"
+        onClick={() => {
+          if (allApplied) {
+            for (const mv of suggestion.moves) update(mv.moduleId, { positionMm: mv.fromMm });
+          } else {
+            for (const mv of suggestion.moves) update(mv.moduleId, { positionMm: mv.toMm });
+          }
+        }}
+        className={`mt-2 w-full px-3 py-2 text-sm font-bold rounded transition-colors ${
+          allApplied
+            ? "bg-red-100 text-red-700 hover:bg-red-200 border border-red-300"
+            : "bg-emerald-600 text-white hover:bg-emerald-700"
+        }`}
+      >
+        {allApplied ? t("suggestions.revertAll") : t("suggestions.applyAll")}
+      </button>
+    </div>
   );
 }
 

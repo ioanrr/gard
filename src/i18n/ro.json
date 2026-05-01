@@ -106,7 +106,9 @@
     "cancel": "Anulează",
     "applyAll": "Aplică toate sugestiile",
     "revertAll": "Anulează toate sugestiile",
-    "close": "Ieși din sugestii"
+    "close": "Ieși din sugestii",
+    "package": "Pachet de optimizări",
+    "packageHint": "Mută {{count}} elemente împreună pentru rezultatul cel mai eficient"
   },
   "efficiency": {
     "label": "Eficiență tăiere"
