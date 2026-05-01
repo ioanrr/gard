@@ -8,6 +8,7 @@ import {
   type SingleSuggestion,
   type SuggestionMove,
 } from "../engine/suggestions";
+import type { FenceModule } from "../engine/types";
 
 const TOLERANCE_OPTIONS = [5, 7, 10, 15, 20, 100] as const;
 const DEFAULT_TOLERANCE = 10;
@@ -176,11 +177,11 @@ function SingleCard({
   update,
 }: {
   suggestion: SingleSuggestion;
-  modules: ReturnType<typeof useProject>["modules"] extends infer T ? any : never;
-  update: (id: string, patch: any) => void;
+  modules: FenceModule[];
+  update: (id: string, patch: Partial<FenceModule>) => void;
 }) {
   const { t } = useTranslation();
-  const m = modules.find((x: any) => x.id === suggestion.move.moduleId);
+  const m = modules.find((x) => x.id === suggestion.move.moduleId);
   const isApplied =
     m && m.positionMm === suggestion.move.toMm && m.positionMm !== suggestion.move.fromMm;
 
@@ -221,15 +222,15 @@ function PackageCard({
   update,
 }: {
   suggestion: PackageSuggestion;
-  modules: any[];
-  update: (id: string, patch: any) => void;
+  modules: FenceModule[];
+  update: (id: string, patch: Partial<FenceModule>) => void;
 }) {
   const { t } = useTranslation();
 
   const allApplied = useMemo(
     () =>
       suggestion.moves.every((mv) => {
-        const m = modules.find((x: any) => x.id === mv.moduleId);
+        const m = modules.find((x) => x.id === mv.moduleId);
         return m && m.positionMm === mv.toMm;
       }),
     [modules, suggestion.moves]
