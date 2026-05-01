@@ -3,6 +3,7 @@ import type {
   FenceModule,
   ModuleCalculation,
   ModuleKind,
+  ModuleNote,
 } from "./types";
 import { slatProfileFor } from "../data/profiles";
 
@@ -45,7 +46,7 @@ function planSlats(
 
 export function calcPanel(m: FenceModule): ModuleCalculation {
   const pieces: CutPiece[] = [];
-  const notes: string[] = [];
+  const notes: ModuleNote[] = [];
   const accessories: { id: string; qty: number }[] = [];
 
   const horizontal = m.orientation === "horizontal";
@@ -80,13 +81,19 @@ export function calcPanel(m: FenceModule): ModuleCalculation {
 
   if (m.width > 3000) {
     accessories.push({ id: "reinforcement", qty: 1 });
-    notes.push("Panou > 3000 mm: întăritură adăugată");
+    notes.push({ key: "notes.reinforcementOver3m" });
   }
 
   if (layout.effectiveGap > 0) {
-    notes.push(`Spațiere efectivă: ${layout.effectiveGap.toFixed(1)} mm`);
+    notes.push({
+      key: "notes.effectiveGap",
+      params: { gap: layout.effectiveGap.toFixed(1) },
+    });
   }
-  notes.push(`${layout.count} șipci de ${slatLengthMm} mm`);
+  notes.push({
+    key: "notes.slatsOf",
+    params: { count: layout.count, length: slatLengthMm },
+  });
 
   return {
     moduleId: m.id,
@@ -101,7 +108,7 @@ export function calcPanel(m: FenceModule): ModuleCalculation {
 
 export function calcSmallGate(m: FenceModule): ModuleCalculation {
   const pieces: CutPiece[] = [];
-  const notes: string[] = [];
+  const notes: ModuleNote[] = [];
   const accessories: { id: string; qty: number }[] = [];
 
   const frameWidth = m.width - 100;
@@ -147,10 +154,19 @@ export function calcSmallGate(m: FenceModule): ModuleCalculation {
   accessories.push({ id: "lock_set", qty: 1 });
   accessories.push({ id: "rubber_trim", qty: Math.ceil((m.height + m.width) / 1000) });
 
-  notes.push(`Cadru ${frameWidth}×${frameHeight} mm`);
-  notes.push(`${layout.count} șipci de ${slatLengthMm} mm`);
+  notes.push({
+    key: "notes.frame",
+    params: { width: frameWidth, height: frameHeight },
+  });
+  notes.push({
+    key: "notes.slatsOf",
+    params: { count: layout.count, length: slatLengthMm },
+  });
   if (layout.effectiveGap > 0) {
-    notes.push(`Spațiere efectivă: ${layout.effectiveGap.toFixed(1)} mm`);
+    notes.push({
+      key: "notes.effectiveGap",
+      params: { gap: layout.effectiveGap.toFixed(1) },
+    });
   }
 
   return {
@@ -166,7 +182,7 @@ export function calcSmallGate(m: FenceModule): ModuleCalculation {
 
 function calcLargeGate(m: FenceModule, kind: ModuleKind): ModuleCalculation {
   const pieces: CutPiece[] = [];
-  const notes: string[] = [];
+  const notes: ModuleNote[] = [];
   const accessories: { id: string; qty: number }[] = [];
 
   const isSwing = kind === "swing_gate";
@@ -223,10 +239,23 @@ function calcLargeGate(m: FenceModule, kind: ModuleKind): ModuleCalculation {
     accessories.push({ id: "lock_set", qty: 1 });
   }
 
-  notes.push(`${leafCount} cana(le), fiecare ${Math.round(leafWidth)}×${Math.round(leafHeight)} mm`);
-  notes.push(`${totalSlats} șipci totale de ${slatLengthMm} mm`);
+  notes.push({
+    key: "notes.leaves",
+    params: {
+      count: leafCount,
+      width: Math.round(leafWidth),
+      height: Math.round(leafHeight),
+    },
+  });
+  notes.push({
+    key: "notes.slatsTotal",
+    params: { count: totalSlats, length: slatLengthMm },
+  });
   if (layout.effectiveGap > 0) {
-    notes.push(`Spațiere efectivă: ${layout.effectiveGap.toFixed(1)} mm`);
+    notes.push({
+      key: "notes.effectiveGap",
+      params: { gap: layout.effectiveGap.toFixed(1) },
+    });
   }
 
   return {

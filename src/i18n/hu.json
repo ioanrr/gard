@@ -13,7 +13,23 @@
   },
   "lang": {
     "ro": "Română",
-    "hu": "Magyar"
+    "hu": "Magyar",
+    "de": "Deutsch"
+  },
+  "canvasLabel": {
+    "panel": "Panel",
+    "small_gate": "Kiskapu",
+    "swing_gate": "Nyíló",
+    "sliding_gate": "Toló",
+    "cantilever_gate": "Önhordó"
+  },
+  "notes": {
+    "reinforcementOver3m": "Panel > 3000 mm: merevítés hozzáadva",
+    "effectiveGap": "Tényleges hézag: {{gap}} mm",
+    "slatsOf": "{{count}} léc {{length}} mm",
+    "slatsTotal": "Összesen {{count}} léc {{length}} mm",
+    "frame": "Keret {{width}}×{{height}} mm",
+    "leaves": "{{count}} szárny, egyenként {{width}}×{{height}} mm"
   },
   "sketch": {
     "instructions": "Kattints a vászonra egy pont kijelöléséhez, majd újabb kattintásokkal adj hozzá szakaszokat. Csak egy oldalt is rajzolhatsz, vagy dupla kattintással lezárhatod a kerületet. A szakasz tényleges hosszát a kijelölés után állíthatod be.",
@@ -28,7 +44,9 @@
     "segmentLength": "Szakasz hossza (mm)",
     "addModule": "Modul hozzáadása ehhez a szakaszhoz",
     "noSegmentSelected": "Nincs szakasz kijelölve",
-    "segmentSelected": "Kijelölt szakasz"
+    "segmentSelected": "Kijelölt szakasz",
+    "usedByModules": "Modulok által használt",
+    "remainingAutoPanels": "Maradék (automatikus panelek)"
   },
   "modules": {
     "panel": "Kerítéspanel",
@@ -54,6 +72,7 @@
     "position": "Pozíció a szakaszon",
     "distFromStart": "Távolság a bal végtől (mm)",
     "backToSegment": "+ Új elem hozzáadása",
+    "rightEdge": "modul jobb széle",
     "infill": {
       "solid": "Tömör (hézag nélkül)",
       "slatted": "Hézagos",

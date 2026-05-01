@@ -3,6 +3,7 @@ import { Stage, Layer, Line, Circle, Text, Group, Rect } from "react-konva";
 import type Konva from "konva";
 import { useProject } from "../../store/projectStore";
 import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 import type { Segment, FenceModule } from "../../engine/types";
 
 const SEGMENT_OFFSET = 16;
@@ -333,18 +334,7 @@ function SegmentNode({
 }
 
 function kindLabel(k: FenceModule["kind"]) {
-  switch (k) {
-    case "panel":
-      return "Panou";
-    case "small_gate":
-      return "Portiță";
-    case "swing_gate":
-      return "Batantă";
-    case "sliding_gate":
-      return "Glisantă";
-    case "cantilever_gate":
-      return "Autoport.";
-  }
+  return i18n.t(`canvasLabel.${k}`);
 }
 
 export function useResizeObserver(ref: React.RefObject<HTMLElement | null>) {

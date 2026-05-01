@@ -1,0 +1,146 @@
+{
+  "app": {
+    "title": "Zaun- & Tor-Kalkulator",
+    "titleHint": "neues Projekt starten - alle Daten gehen verloren",
+    "subtitle": "Zeichnen, konfigurieren, Angebot erhalten"
+  },
+  "nav": {
+    "sketch": "Skizze",
+    "modules": "Module",
+    "quote": "Angebot",
+    "cutting": "Schnittplan",
+    "suggestions": "Fertig — Vorschläge anzeigen"
+  },
+  "lang": {
+    "ro": "Română",
+    "hu": "Magyar",
+    "de": "Deutsch"
+  },
+  "canvasLabel": {
+    "panel": "Panel",
+    "small_gate": "Pforte",
+    "swing_gate": "Drehflügel",
+    "sliding_gate": "Schiebetor",
+    "cantilever_gate": "Freitragend"
+  },
+  "notes": {
+    "reinforcementOver3m": "Panel > 3000 mm: Verstärkung hinzugefügt",
+    "effectiveGap": "Tatsächlicher Abstand: {{gap}} mm",
+    "slatsOf": "{{count}} Latten je {{length}} mm",
+    "slatsTotal": "{{count}} Latten insgesamt je {{length}} mm",
+    "frame": "Rahmen {{width}}×{{height}} mm",
+    "leaves": "{{count}} Flügel, je {{width}}×{{height}} mm"
+  },
+  "sketch": {
+    "instructions": "Klicke auf die Zeichenfläche, um einen Punkt zu setzen, dann weitere Klicks für zusätzliche Segmente. Du kannst eine einzelne Seite zeichnen oder per Doppelklick den Umfang schließen. Wähle anschließend ein Segment aus, um die tatsächliche Länge anzupassen.",
+    "clear": "Alles löschen",
+    "undo": "Rückgängig",
+    "close": "Umfang schließen",
+    "finish": "Zeichnen beenden",
+    "addSegment": "Zeichenmodus",
+    "select": "Elemente hinzufügen",
+    "scale": "Maßstab",
+    "totalLength": "Gesamtlänge",
+    "segmentLength": "Segmentlänge (mm)",
+    "addModule": "Modul zu diesem Segment hinzufügen",
+    "noSegmentSelected": "Kein Segment ausgewählt",
+    "segmentSelected": "Ausgewähltes Segment",
+    "usedByModules": "Von Modulen belegt",
+    "remainingAutoPanels": "Verbleibend (Auto-Panele)"
+  },
+  "modules": {
+    "panel": "Zaunpanel",
+    "small_gate": "Gartenpforte",
+    "swing_gate": "Drehflügeltor",
+    "sliding_gate": "Schiebetor",
+    "cantilever_gate": "Freitragendes Schiebetor",
+    "auto_panels": "Automatisch generierte Panele",
+    "remove": "Modul löschen",
+    "config": "Modul-Einstellungen",
+    "width": "Breite (mm)",
+    "height": "Höhe (mm)",
+    "color": "Farbe",
+    "secondaryColor": "Sekundärfarbe",
+    "infillType": "Füllungs-Typ",
+    "slatWidth": "Lattenbreite (mm)",
+    "secondarySlatWidth": "Sekundärbreite (mm)",
+    "gap": "Abstand (mm)",
+    "orientation": "Ausrichtung",
+    "horizontal": "Waagerecht",
+    "vertical": "Senkrecht",
+    "noModuleSelected": "Wähle ein Modul aus, um es zu konfigurieren",
+    "position": "Position am Segment",
+    "distFromStart": "Abstand vom linken Rand (mm)",
+    "backToSegment": "+ Weiteres Element hinzufügen",
+    "rightEdge": "rechte Modulkante",
+    "infill": {
+      "solid": "Geschlossen (ohne Abstand)",
+      "slatted": "Mit Abstand",
+      "slatted_secondary": "Abstand + Sekundärbreite"
+    }
+  },
+  "quote": {
+    "title": "Preisangebot",
+    "client": "Kunde",
+    "date": "Datum",
+    "item": "Produkt / Leistung",
+    "qty": "Menge",
+    "unit": "Einh.",
+    "unitPrice": "Einzelpreis",
+    "total": "Gesamt",
+    "subtotal": "Zwischensumme",
+    "vat": "MwSt. (19%)",
+    "grandTotal": "Gesamtsumme inkl. MwSt.",
+    "currency": "RON",
+    "exportPdf": "Angebot als PDF exportieren",
+    "empty": "Füge Module hinzu, um das Angebot zu erstellen"
+  },
+  "cutting": {
+    "title": "Schnittplan",
+    "subtitle": "6000-mm-Stangen, optimiert für minimalen Verschnitt",
+    "profile": "Profil",
+    "color": "Farbe",
+    "barNo": "Stange #",
+    "cuts": "Schnitte (mm)",
+    "waste": "Verschnitt (mm)",
+    "totalBars": "Stangen gesamt",
+    "totalWaste": "Verschnitt gesamt",
+    "wasteRatio": "Verschnittanteil",
+    "exportPdf": "Schnittplan als PDF",
+    "empty": "Füge Module hinzu, um den Schnittplan zu erstellen"
+  },
+  "elevation": {
+    "title": "Vorderansicht — ausgewähltes Segment"
+  },
+  "suggestions": {
+    "title": "Vorschläge zur Preisoptimierung",
+    "empty": "Füge mindestens ein Segment hinzu, um Vorschläge zu erhalten.",
+    "alreadyOptimal": "Die aktuelle Konfiguration scheint bereits optimal zu sein.",
+    "totalSavings": "Angewandte / mögliche Ersparnis",
+    "baseCost": "Aktuelle Kosten",
+    "move": "verschieben auf",
+    "left": "nach links",
+    "right": "nach rechts",
+    "apply": "Anwenden",
+    "cancel": "Rückgängig",
+    "applyAll": "Alle Vorschläge anwenden",
+    "revertAll": "Alle Vorschläge rückgängig machen",
+    "close": "Vorschläge verlassen",
+    "package": "Optimierungspaket",
+    "packageHint": "Verschiebe die Elemente gemeinsam für das beste Ergebnis",
+    "toleranceLabel": "Wie weit darf jedes Element verschoben werden",
+    "toleranceHint": "Prozentsatz der Segmentlänge. Vorschläge suchen nur in diesem Bereich um die aktuelle Position herum.",
+    "toleranceUnlimited": "Unbegrenzt",
+    "revertToOriginal": "Zurück zur Ausgangszeichnung"
+  },
+  "efficiency": {
+    "label": "Schneideeffizienz"
+  },
+  "summary": {
+    "title": "Projektübersicht",
+    "modules": "Module",
+    "totalLength": "Gesamtlänge",
+    "panels": "Panele",
+    "gates": "Tore"
+  }
+}

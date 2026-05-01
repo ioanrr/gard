@@ -65,9 +65,9 @@ export function SegmentPanel() {
       </label>
 
       <div className="text-xs text-gray-500 grid grid-cols-2 gap-1 bg-gray-50 p-2 rounded">
-        <span>Folosit module:</span>
+        <span>{t("sketch.usedByModules")}:</span>
         <span className="text-right">{used} mm</span>
-        <span>Rămas (auto-panouri):</span>
+        <span>{t("sketch.remainingAutoPanels")}:</span>
         <span className="text-right">{remaining} mm</span>
       </div>
 

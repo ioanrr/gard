@@ -51,6 +51,11 @@ export interface CutPiece {
   source: { moduleId: string; role: string };
 }
 
+export interface ModuleNote {
+  key: string;
+  params?: Record<string, string | number>;
+}
+
 export interface ModuleCalculation {
   moduleId: string;
   kind: ModuleKind;
@@ -58,7 +63,7 @@ export interface ModuleCalculation {
   accessories: { id: string; qty: number }[];
   slatCount: number;
   effectiveGap: number;
-  notes: string[];
+  notes: ModuleNote[];
 }
 
 export interface BarLayout {

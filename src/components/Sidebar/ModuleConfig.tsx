@@ -88,7 +88,7 @@ export function ModuleConfig() {
           <div className="text-xs text-gray-600 flex justify-between">
             <span>0 m</span>
             <span>
-              {((m.positionMm + m.width) / 1000).toFixed(2)} m (capăt drept modul)
+              {((m.positionMm + m.width) / 1000).toFixed(2)} m ({t("modules.rightEdge")})
             </span>
             <span>{(segLen / 1000).toFixed(2)} m</span>
           </div>
@@ -164,7 +164,7 @@ export function ModuleConfig() {
 
       <div className="bg-gray-50 rounded p-3 text-xs text-gray-700 space-y-1">
         {calc.notes.map((n, i) => (
-          <div key={i}>• {n}</div>
+          <div key={i}>• {t(n.key, n.params)}</div>
         ))}
       </div>
     </div>

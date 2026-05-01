@@ -13,7 +13,23 @@
   },
   "lang": {
     "ro": "Română",
-    "hu": "Magyar"
+    "hu": "Magyar",
+    "de": "Deutsch"
+  },
+  "canvasLabel": {
+    "panel": "Panou",
+    "small_gate": "Portiță",
+    "swing_gate": "Batantă",
+    "sliding_gate": "Glisantă",
+    "cantilever_gate": "Autoport."
+  },
+  "notes": {
+    "reinforcementOver3m": "Panou > 3000 mm: întăritură adăugată",
+    "effectiveGap": "Spațiere efectivă: {{gap}} mm",
+    "slatsOf": "{{count}} șipci de {{length}} mm",
+    "slatsTotal": "{{count}} șipci totale de {{length}} mm",
+    "frame": "Cadru {{width}}×{{height}} mm",
+    "leaves": "{{count}} cana(le), fiecare {{width}}×{{height}} mm"
   },
   "sketch": {
     "instructions": "Click pe canvas pentru a desena un punct, apoi mai dă click pentru a adăuga segmente. Poți desena doar o latură (gard simplu) sau să închizi perimetrul cu dublu-click. Selectează apoi un segment ca să-i editezi lungimea reală.",
@@ -28,7 +44,9 @@
     "segmentLength": "Lungimea segmentului (mm)",
     "addModule": "Adaugă modul pe acest segment",
     "noSegmentSelected": "Niciun segment selectat",
-    "segmentSelected": "Segment selectat"
+    "segmentSelected": "Segment selectat",
+    "usedByModules": "Folosit module",
+    "remainingAutoPanels": "Rămas (auto-panouri)"
   },
   "modules": {
     "panel": "Panou gard",
@@ -54,6 +72,7 @@
     "position": "Poziție pe segment",
     "distFromStart": "Distanță de la capătul stâng (mm)",
     "backToSegment": "+ Adaugă alt element",
+    "rightEdge": "capăt drept modul",
     "infill": {
       "solid": "Solid (fără spațiu)",
       "slatted": "Cu spațiere",

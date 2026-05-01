@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useProject, autoPanelsForSegment } from "../../store/projectStore";
 import { calculateModule } from "../../engine/calculations";
 import { colorById } from "../../data/colors";
+import i18n from "../../i18n";
 import type { FenceModule, Segment } from "../../engine/types";
 
 const STRIP_HEIGHT = 170;
@@ -231,16 +232,5 @@ function ModuleElevation({
 }
 
 function kindShort(k: FenceModule["kind"]) {
-  switch (k) {
-    case "panel":
-      return "panou";
-    case "small_gate":
-      return "portiță";
-    case "swing_gate":
-      return "batantă";
-    case "sliding_gate":
-      return "glisantă";
-    case "cantilever_gate":
-      return "autoport.";
-  }
+  return i18n.t(`canvasLabel.${k}`);
 }
