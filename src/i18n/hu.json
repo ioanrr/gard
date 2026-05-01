@@ -97,11 +97,16 @@
     "title": "Optimalizálási javaslatok",
     "empty": "Adj hozzá legalább egy szakaszt a javaslatokhoz.",
     "alreadyOptimal": "A jelenlegi konfiguráció már optimálisnak tűnik.",
-    "totalSavings": "Becsült összesen megtakarítás",
+    "totalSavings": "Alkalmazott / lehetséges megtakarítás",
     "baseCost": "Jelenlegi költség",
     "move": "áthelyezés:",
+    "left": "balra",
+    "right": "jobbra",
     "apply": "Alkalmazás",
-    "applyAll": "Összes alkalmazása"
+    "cancel": "Visszavonás",
+    "applyAll": "Összes alkalmazása",
+    "revertAll": "Összes visszavonása",
+    "close": "Kilépés a javaslatokból"
   },
   "efficiency": {
     "label": "Vágási hatékonyság"

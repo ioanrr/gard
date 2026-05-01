@@ -14,11 +14,12 @@ import { Modal } from "./components/Modal";
 import { useProject } from "./store/projectStore";
 import { APP_VERSION } from "./version";
 
-type Overlay = "none" | "cutting" | "quote" | "suggestions";
+type Overlay = "none" | "cutting" | "quote";
 
 function App() {
   const { t } = useTranslation();
   const [overlay, setOverlay] = useState<Overlay>("none");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const { width, height } = useResizeObserver(canvasContainerRef);
 
@@ -56,7 +57,7 @@ function App() {
           <CanvasToolbar
             onOpenCutting={() => setOverlay("cutting")}
             onOpenQuote={() => setOverlay("quote")}
-            onOpenSuggestions={() => setOverlay("suggestions")}
+            onOpenSuggestions={() => setShowSuggestions(true)}
           />
           <div ref={canvasContainerRef} className="flex-1 relative min-h-0">
             <SketchCanvas width={width} height={height} />
@@ -65,18 +66,24 @@ function App() {
         </main>
 
         <aside className="w-[340px] border-l border-gray-200 bg-white flex flex-col shrink-0 overflow-hidden">
-          <ProjectSummary />
-          <div className="flex-1 overflow-y-auto">
-            {selectedModuleId ? (
-              <ModuleConfig />
-            ) : selectedSegmentId ? (
-              <SegmentPanel />
-            ) : (
-              <div className="p-4 text-sm text-gray-500">
-                {t("sketch.noSegmentSelected")}
+          {showSuggestions ? (
+            <SuggestionsView onClose={() => setShowSuggestions(false)} />
+          ) : (
+            <>
+              <ProjectSummary />
+              <div className="flex-1 overflow-y-auto">
+                {selectedModuleId ? (
+                  <ModuleConfig />
+                ) : selectedSegmentId ? (
+                  <SegmentPanel />
+                ) : (
+                  <div className="p-4 text-sm text-gray-500">
+                    {t("sketch.noSegmentSelected")}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
         </aside>
       </div>
 
@@ -93,13 +100,6 @@ function App() {
         title={t("nav.quote")}
       >
         <QuoteView />
-      </Modal>
-      <Modal
-        open={overlay === "suggestions"}
-        onClose={() => setOverlay("none")}
-        title={t("suggestions.title")}
-      >
-        <SuggestionsView />
       </Modal>
     </div>
   );

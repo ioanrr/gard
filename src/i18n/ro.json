@@ -97,11 +97,16 @@
     "title": "Sugestii pentru optimizare preț",
     "empty": "Adaugă cel puțin un segment pentru a primi sugestii.",
     "alreadyOptimal": "Configurația curentă pare deja optimă pentru pozițiile modulelor.",
-    "totalSavings": "Economie totală estimată",
+    "totalSavings": "Economie aplicată / potențială",
     "baseCost": "Cost actual",
     "move": "mută la",
+    "left": "spre stânga",
+    "right": "spre dreapta",
     "apply": "Aplică",
-    "applyAll": "Aplică toate sugestiile"
+    "cancel": "Anulează",
+    "applyAll": "Aplică toate sugestiile",
+    "revertAll": "Anulează toate sugestiile",
+    "close": "Ieși din sugestii"
   },
   "efficiency": {
     "label": "Eficiență tăiere"
