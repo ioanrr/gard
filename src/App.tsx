@@ -8,15 +8,17 @@ import { ModuleConfig } from "./components/Sidebar/ModuleConfig";
 import { ProjectSummary } from "./components/Sidebar/ProjectSummary";
 import { QuoteView } from "./components/Quote/QuoteView";
 import { CuttingPlanView } from "./components/Quote/CuttingPlanView";
+import { SuggestionsView } from "./components/SuggestionsView";
 import { LangSwitcher } from "./components/LangSwitcher";
+import { Modal } from "./components/Modal";
 import { useProject } from "./store/projectStore";
 import { APP_VERSION } from "./version";
 
-type Tab = "sketch" | "quote" | "cutting";
+type Overlay = "none" | "cutting" | "quote" | "suggestions";
 
 function App() {
   const { t } = useTranslation();
-  const [tab, setTab] = useState<Tab>("sketch");
+  const [overlay, setOverlay] = useState<Overlay>("none");
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const { width, height } = useResizeObserver(canvasContainerRef);
 
@@ -51,30 +53,14 @@ function App() {
 
       <div className="flex-1 flex min-h-0">
         <main className="flex-1 flex flex-col min-w-0">
-          <nav className="bg-white border-b border-gray-200 flex">
-            <TabBtn active={tab === "sketch"} onClick={() => setTab("sketch")}>
-              {t("nav.sketch")}
-            </TabBtn>
-            <TabBtn active={tab === "cutting"} onClick={() => setTab("cutting")}>
-              {t("nav.cutting")}
-            </TabBtn>
-            <TabBtn active={tab === "quote"} onClick={() => setTab("quote")}>
-              {t("nav.quote")}
-            </TabBtn>
-          </nav>
-
-          <div className="flex-1 min-h-0 overflow-auto">
-            {tab === "sketch" && (
-              <div className="flex flex-col h-full">
-                <CanvasToolbar />
-                <div ref={canvasContainerRef} className="flex-1 relative">
-                  <SketchCanvas width={width} height={height} />
-                  <SegmentElevation />
-                </div>
-              </div>
-            )}
-            {tab === "cutting" && <CuttingPlanView />}
-            {tab === "quote" && <QuoteView />}
+          <CanvasToolbar
+            onOpenCutting={() => setOverlay("cutting")}
+            onOpenQuote={() => setOverlay("quote")}
+            onOpenSuggestions={() => setOverlay("suggestions")}
+          />
+          <div ref={canvasContainerRef} className="flex-1 relative min-h-0">
+            <SketchCanvas width={width} height={height} />
+            <SegmentElevation />
           </div>
         </main>
 
@@ -93,31 +79,29 @@ function App() {
           </div>
         </aside>
       </div>
-    </div>
-  );
-}
 
-function TabBtn({
-  children,
-  active,
-  onClick,
-}: {
-  children: React.ReactNode;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`px-4 py-2 text-sm border-b-2 ${
-        active
-          ? "border-brand-700 text-brand-900 font-medium"
-          : "border-transparent text-gray-500 hover:text-gray-800"
-      }`}
-    >
-      {children}
-    </button>
+      <Modal
+        open={overlay === "cutting"}
+        onClose={() => setOverlay("none")}
+        title={t("nav.cutting")}
+      >
+        <CuttingPlanView />
+      </Modal>
+      <Modal
+        open={overlay === "quote"}
+        onClose={() => setOverlay("none")}
+        title={t("nav.quote")}
+      >
+        <QuoteView />
+      </Modal>
+      <Modal
+        open={overlay === "suggestions"}
+        onClose={() => setOverlay("none")}
+        title={t("suggestions.title")}
+      >
+        <SuggestionsView />
+      </Modal>
+    </div>
   );
 }
 

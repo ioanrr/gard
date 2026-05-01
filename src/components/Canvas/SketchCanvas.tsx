@@ -19,7 +19,6 @@ export function SketchCanvas({ width, height }: Props) {
   const segments = useProject((s) => s.segments);
   const modules = useProject((s) => s.modules);
   const closed = useProject((s) => s.closed);
-  const drawMode = useProject((s) => s.drawMode);
   const selectedSegmentId = useProject((s) => s.selectedSegmentId);
   const selectedModuleId = useProject((s) => s.selectedModuleId);
   const pendingPoint = useProject((s) => s.pendingPoint);
@@ -32,8 +31,8 @@ export function SketchCanvas({ width, height }: Props) {
   const closePerimeter = useProject((s) => s.closePerimeter);
 
   const handleClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    if (drawMode !== "draw") return;
     if (e.target !== stageRef.current) return;
+    if (closed) return;
     const pos = stageRef.current?.getPointerPosition();
     if (!pos) return;
     addPoint({ x: pos.x, y: pos.y });
@@ -48,7 +47,7 @@ export function SketchCanvas({ width, height }: Props) {
   const handleMouseLeave = () => setCursor(null);
 
   const handleDblClick = () => {
-    if (drawMode === "draw" && segments.length >= 2 && !closed) {
+    if (segments.length >= 2 && !closed) {
       closePerimeter();
     }
   };
@@ -57,8 +56,7 @@ export function SketchCanvas({ width, height }: Props) {
     pendingPoint ??
     (segments.length > 0 && !closed ? segments[segments.length - 1].end : null);
 
-  const showGhost =
-    drawMode === "draw" && !closed && anchor !== null && cursor !== null;
+  const showGhost = !closed && anchor !== null && cursor !== null;
 
   return (
     <div className="relative w-full h-full overflow-hidden bg-[#fbfaf6] border border-gray-200 rounded-lg">

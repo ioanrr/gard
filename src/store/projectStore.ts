@@ -12,13 +12,11 @@ interface ProjectState {
   modules: FenceModule[];
   pxPerMm: number;
   closed: boolean;
-  drawMode: "draw" | "select";
   selectedSegmentId: string | null;
   selectedModuleId: string | null;
   pendingPoint: Point | null;
   cursor: Point | null;
 
-  setDrawMode: (m: "draw" | "select") => void;
   addPoint: (p: Point) => void;
   setCursor: (p: Point | null) => void;
   closePerimeter: () => void;
@@ -42,13 +40,10 @@ export const useProject = create<ProjectState>((set, get) => {
     modules: [],
     pxPerMm: DEFAULT_PX_PER_MM,
     closed: false,
-    drawMode: "draw",
     selectedSegmentId: null,
     selectedModuleId: null,
     pendingPoint: null,
     cursor: null,
-
-    setDrawMode: (m) => set({ drawMode: m }),
 
     setCursor: (p) => set({ cursor: p }),
 

@@ -8,7 +8,8 @@
     "sketch": "Vázlat",
     "modules": "Modulok",
     "quote": "Árajánlat",
-    "cutting": "Vágási terv"
+    "cutting": "Vágási terv",
+    "suggestions": "Kész — javaslatokat kérek"
   },
   "lang": {
     "ro": "Română",
@@ -91,6 +92,19 @@
   },
   "elevation": {
     "title": "Elölnézet — kijelölt szakasz"
+  },
+  "suggestions": {
+    "title": "Optimalizálási javaslatok",
+    "empty": "Adj hozzá legalább egy szakaszt a javaslatokhoz.",
+    "alreadyOptimal": "A jelenlegi konfiguráció már optimálisnak tűnik.",
+    "totalSavings": "Becsült összesen megtakarítás",
+    "baseCost": "Jelenlegi költség",
+    "move": "áthelyezés:",
+    "apply": "Alkalmazás",
+    "applyAll": "Összes alkalmazása"
+  },
+  "efficiency": {
+    "label": "Vágási hatékonyság"
   },
   "summary": {
     "title": "Projekt összegzés",

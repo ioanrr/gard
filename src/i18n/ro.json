@@ -8,7 +8,8 @@
     "sketch": "Schiță",
     "modules": "Module",
     "quote": "Ofertă",
-    "cutting": "Plan tăiere"
+    "cutting": "Plan tăiere",
+    "suggestions": "Finalizat — fă-mi sugestii"
   },
   "lang": {
     "ro": "Română",
@@ -91,6 +92,19 @@
   },
   "elevation": {
     "title": "Vedere din față — segment selectat"
+  },
+  "suggestions": {
+    "title": "Sugestii pentru optimizare preț",
+    "empty": "Adaugă cel puțin un segment pentru a primi sugestii.",
+    "alreadyOptimal": "Configurația curentă pare deja optimă pentru pozițiile modulelor.",
+    "totalSavings": "Economie totală estimată",
+    "baseCost": "Cost actual",
+    "move": "mută la",
+    "apply": "Aplică",
+    "applyAll": "Aplică toate sugestiile"
+  },
+  "efficiency": {
+    "label": "Eficiență tăiere"
   },
   "summary": {
     "title": "Sumar proiect",

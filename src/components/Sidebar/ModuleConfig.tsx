@@ -1,9 +1,11 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useProject } from "../../store/projectStore";
 import { COLORS } from "../../data/colors";
 import { SLAT_WIDTHS } from "../../data/profiles";
 import type { FenceModule, InfillType, Orientation } from "../../engine/types";
 import { calculateModule } from "../../engine/calculations";
+import { computeWasteRatio } from "../../engine/suggestions";
 
 export function ModuleConfig() {
   const { t } = useTranslation();
@@ -12,9 +14,17 @@ export function ModuleConfig() {
   const segment = useProject((s) =>
     m ? s.segments.find((x) => x.id === m.segmentId) ?? null : null
   );
+  const segments = useProject((s) => s.segments);
+  const allModules = useProject((s) => s.modules);
   const update = useProject((s) => s.updateModule);
   const remove = useProject((s) => s.removeModule);
   const selectSegment = useProject((s) => s.selectSegment);
+
+  const efficiency = useMemo(() => {
+    if (!m) return 1;
+    const ratio = computeWasteRatio({ segments, modules: allModules });
+    return 1 - ratio;
+  }, [segments, allModules, m]);
 
   if (!m) {
     return (
@@ -82,6 +92,7 @@ export function ModuleConfig() {
             </span>
             <span>{(segLen / 1000).toFixed(2)} m</span>
           </div>
+          <EfficiencyBar value={efficiency} label={t("efficiency.label")} />
         </div>
       )}
 
@@ -241,6 +252,34 @@ function NumberRow({
         className="w-full px-3 py-1.5 border border-gray-300 rounded text-sm"
       />
     </label>
+  );
+}
+
+function EfficiencyBar({ value, label }: { value: number; label: string }) {
+  const pct = Math.max(0, Math.min(1, value)) * 100;
+  let color = "bg-emerald-500";
+  let text = "text-emerald-700";
+  if (pct < 75) {
+    color = "bg-amber-500";
+    text = "text-amber-700";
+  }
+  if (pct < 60) {
+    color = "bg-red-500";
+    text = "text-red-700";
+  }
+  return (
+    <div className="pt-2 border-t border-brand-200/60">
+      <div className="flex items-center justify-between text-xs mb-1">
+        <span className="text-gray-600">{label}</span>
+        <span className={`font-semibold ${text}`}>{pct.toFixed(1)}%</span>
+      </div>
+      <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+        <div
+          className={`h-full ${color} transition-all duration-300`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
   );
 }
 
