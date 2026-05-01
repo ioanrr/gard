@@ -14,10 +14,6 @@
     "ro": "Română",
     "hu": "Magyar"
   },
-  "view": {
-    "client": "Vedere client",
-    "internal": "Vedere internă"
-  },
   "sketch": {
     "instructions": "Click pe canvas pentru a desena un punct, apoi mai dă click pentru a adăuga segmente. Poți desena doar o latură (gard simplu) sau să închizi perimetrul cu dublu-click. Selectează apoi un segment ca să-i editezi lungimea reală.",
     "clear": "Șterge tot",

@@ -17,7 +17,6 @@ type Tab = "sketch" | "quote" | "cutting";
 function App() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("sketch");
-  const [view, setView] = useState<"client" | "internal">("client");
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const { width, height } = useResizeObserver(canvasContainerRef);
 
@@ -46,26 +45,6 @@ function App() {
           <div className="text-[11px] text-brand-700/80">{t("app.subtitle")}</div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 text-xs bg-brand-200/60 rounded p-0.5">
-            <button
-              type="button"
-              onClick={() => setView("client")}
-              className={`px-2 py-1 rounded ${
-                view === "client" ? "bg-brand-700 text-white" : "text-brand-900"
-              }`}
-            >
-              {t("view.client")}
-            </button>
-            <button
-              type="button"
-              onClick={() => setView("internal")}
-              className={`px-2 py-1 rounded ${
-                view === "internal" ? "bg-brand-700 text-white" : "text-brand-900"
-              }`}
-            >
-              {t("view.internal")}
-            </button>
-          </div>
           <LangSwitcher />
         </div>
       </header>
@@ -76,14 +55,12 @@ function App() {
             <TabBtn active={tab === "sketch"} onClick={() => setTab("sketch")}>
               {t("nav.sketch")}
             </TabBtn>
+            <TabBtn active={tab === "cutting"} onClick={() => setTab("cutting")}>
+              {t("nav.cutting")}
+            </TabBtn>
             <TabBtn active={tab === "quote"} onClick={() => setTab("quote")}>
               {t("nav.quote")}
             </TabBtn>
-            {view === "internal" && (
-              <TabBtn active={tab === "cutting"} onClick={() => setTab("cutting")}>
-                {t("nav.cutting")}
-              </TabBtn>
-            )}
           </nav>
 
           <div className="flex-1 min-h-0 overflow-auto">
@@ -96,8 +73,8 @@ function App() {
                 </div>
               </div>
             )}
+            {tab === "cutting" && <CuttingPlanView />}
             {tab === "quote" && <QuoteView />}
-            {tab === "cutting" && view === "internal" && <CuttingPlanView />}
           </div>
         </main>
 

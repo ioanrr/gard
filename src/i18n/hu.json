@@ -14,10 +14,6 @@
     "ro": "Română",
     "hu": "Magyar"
   },
-  "view": {
-    "client": "Ügyfél nézet",
-    "internal": "Belső nézet"
-  },
   "sketch": {
     "instructions": "Kattints a vászonra egy pont kijelöléséhez, majd újabb kattintásokkal adj hozzá szakaszokat. Csak egy oldalt is rajzolhatsz, vagy dupla kattintással lezárhatod a kerületet. A szakasz tényleges hosszát a kijelölés után állíthatod be.",
     "clear": "Minden törlése",
