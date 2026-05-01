@@ -34,7 +34,7 @@ export function ModuleConfig() {
         <button
           type="button"
           onClick={() => selectSegment(segment.id)}
-          className="w-full text-center text-base font-semibold text-white bg-brand-700 hover:bg-brand-900 px-3 py-3 rounded shadow-sm transition-colors"
+          className="w-full text-center text-base font-bold text-white bg-gradient-to-r from-amber-400 via-orange-500 to-orange-600 hover:from-amber-500 hover:via-orange-600 hover:to-orange-700 px-3 py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 ring-2 ring-orange-300/50 hover:ring-orange-400 hover:scale-[1.02]"
         >
           {t("modules.backToSegment")}
         </button>

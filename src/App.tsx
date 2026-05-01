@@ -26,7 +26,7 @@ function App() {
 
   return (
     <div className="h-screen w-screen flex flex-col">
-      <header className="h-14 bg-brand-900 text-white flex items-center px-5 justify-between shrink-0">
+      <header className="h-14 bg-brand-50 text-brand-900 flex items-center px-5 justify-between shrink-0 border-b border-brand-200/70 shadow-sm">
         <div>
           <div className="text-base font-semibold tracking-tight flex items-center gap-2">
             <button
@@ -35,23 +35,23 @@ function App() {
               className="group relative hover:underline focus:outline-none focus:underline cursor-pointer"
             >
               {t("app.title")}
-              <span className="pointer-events-none absolute left-0 top-full mt-1 whitespace-nowrap text-[11px] font-normal bg-brand-900 text-brand-100/90 px-2 py-1 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity">
+              <span className="pointer-events-none absolute left-0 top-full mt-1 whitespace-nowrap text-[11px] font-normal bg-brand-900 text-brand-100 px-2 py-1 rounded shadow opacity-0 group-hover:opacity-100 transition-opacity">
                 ({t("app.titleHint")})
               </span>
             </button>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 bg-brand-700/60 text-brand-100 rounded">
+            <span className="text-[10px] font-mono px-1.5 py-0.5 bg-brand-200 text-brand-900 rounded">
               {APP_VERSION}
             </span>
           </div>
-          <div className="text-[11px] text-brand-100/80">{t("app.subtitle")}</div>
+          <div className="text-[11px] text-brand-700/80">{t("app.subtitle")}</div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1 text-xs bg-brand-700/60 rounded p-0.5">
+          <div className="flex items-center gap-1 text-xs bg-brand-200/60 rounded p-0.5">
             <button
               type="button"
               onClick={() => setView("client")}
               className={`px-2 py-1 rounded ${
-                view === "client" ? "bg-white text-brand-900" : "text-white"
+                view === "client" ? "bg-brand-700 text-white" : "text-brand-900"
               }`}
             >
               {t("view.client")}
@@ -60,7 +60,7 @@ function App() {
               type="button"
               onClick={() => setView("internal")}
               className={`px-2 py-1 rounded ${
-                view === "internal" ? "bg-white text-brand-900" : "text-white"
+                view === "internal" ? "bg-brand-700 text-white" : "text-brand-900"
               }`}
             >
               {t("view.internal")}
