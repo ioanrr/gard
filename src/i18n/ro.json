@@ -111,7 +111,8 @@
     "packageHint": "Mută elementele împreună pentru rezultatul cel mai eficient",
     "toleranceLabel": "Cât de mult poate fi mutat fiecare element",
     "toleranceHint": "Procent din lungimea segmentului. Sugestiile vor căuta optime doar în acest interval în jurul poziției actuale.",
-    "toleranceUnlimited": "Fără limită"
+    "toleranceUnlimited": "Fără limită",
+    "revertToOriginal": "Înapoi la desenul inițial"
   },
   "efficiency": {
     "label": "Eficiență tăiere"

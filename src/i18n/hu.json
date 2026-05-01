@@ -111,7 +111,8 @@
     "packageHint": "Mozgasd az elemeket együtt a leghatékonyabb eredményért",
     "toleranceLabel": "Mennyit mozdulhat el egy elem",
     "toleranceHint": "A szakasz hosszának százaléka. A javaslatok csak ezen a tartományon belül keresnek optimumot a jelenlegi pozícióhoz képest.",
-    "toleranceUnlimited": "Korlátlan"
+    "toleranceUnlimited": "Korlátlan",
+    "revertToOriginal": "Vissza az eredeti rajzhoz"
   },
   "efficiency": {
     "label": "Vágási hatékonyság"

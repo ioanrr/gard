@@ -47,6 +47,22 @@ export function SuggestionsView({ onClose }: { onClose: () => void }) {
     return { baseCost, suggestions };
   }, [segments, baselineModules, tolerance]);
 
+  const isModified = useMemo(
+    () =>
+      modules.some(
+        (m) =>
+          originalSnapshot[m.id] !== undefined &&
+          m.positionMm !== originalSnapshot[m.id]
+      ),
+    [modules, originalSnapshot]
+  );
+
+  const revertToOriginal = () => {
+    for (const id in originalSnapshot) {
+      update(id, { positionMm: originalSnapshot[id] });
+    }
+  };
+
   const toleranceSelector = (
     <div className="bg-white border border-gray-200 rounded p-3">
       <div className="text-[11px] uppercase tracking-wide text-gray-600 font-semibold mb-2">
@@ -122,6 +138,15 @@ export function SuggestionsView({ onClose }: { onClose: () => void }) {
             )
           )
         )}
+
+        <button
+          type="button"
+          onClick={revertToOriginal}
+          disabled={!isModified}
+          className="w-full px-3 py-2.5 text-sm font-semibold rounded border-2 border-gray-400 text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          ↶ {t("suggestions.revertToOriginal")}
+        </button>
       </div>
     </SuggestionsLayout>
   );
