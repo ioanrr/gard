@@ -25,6 +25,7 @@ function App() {
 
   const selectedSegmentId = useProject((s) => s.selectedSegmentId);
   const selectedModuleId = useProject((s) => s.selectedModuleId);
+  const hasSegments = useProject((s) => s.segments.length > 0);
 
   return (
     <div className="h-screen flex flex-col bg-white mx-auto w-full max-w-[1600px] shadow-xl">
@@ -59,9 +60,18 @@ function App() {
             onOpenQuote={() => setOverlay("quote")}
             onOpenSuggestions={() => setShowSuggestions(true)}
           />
-          <div ref={canvasContainerRef} className="flex-1 relative min-h-0">
-            <SketchCanvas width={width} height={height} />
-            <SegmentElevation />
+          <div className="flex-1 min-h-0 flex flex-col gap-2 p-2 bg-stone-50">
+            {hasSegments && (
+              <div className="basis-[55%] grow shrink min-h-[180px]">
+                <SegmentElevation />
+              </div>
+            )}
+            <div
+              ref={canvasContainerRef}
+              className="basis-[45%] grow shrink relative min-h-[200px]"
+            >
+              <SketchCanvas width={width} height={height} />
+            </div>
           </div>
         </main>
 

@@ -6,10 +6,10 @@ import { colorById } from "../../data/colors";
 import i18n from "../../i18n";
 import type { FenceModule, Segment } from "../../engine/types";
 
-const STRIP_HEIGHT = 170;
-const LABEL_BAND = 26;
-const PAD_X = 12;
-const PAD_Y = 8;
+const HEADER_H = 32;
+const LABEL_BAND = 30;
+const PAD_X = 16;
+const PAD_Y = 12;
 
 export function SegmentElevation() {
   const { t } = useTranslation();
@@ -23,17 +23,25 @@ export function SegmentElevation() {
   const segmentForSelectedModule = moduleId
     ? modules.find((m) => m.id === moduleId)?.segmentId
     : null;
-  const activeSegmentId = segmentId ?? segmentForSelectedModule ?? null;
+  const activeSegmentId =
+    segmentId ??
+    segmentForSelectedModule ??
+    (segments.length > 0 ? segments[segments.length - 1].id : null);
   const segment = activeSegmentId
     ? segments.find((s) => s.id === activeSegmentId) ?? null
     : null;
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(800);
+  const [size, setSize] = useState({ w: 800, h: 300 });
   useEffect(() => {
     if (!containerRef.current) return;
     const ro = new ResizeObserver((entries) => {
-      for (const e of entries) setWidth(Math.max(200, e.contentRect.width));
+      for (const e of entries) {
+        setSize({
+          w: Math.max(200, e.contentRect.width),
+          h: Math.max(120, e.contentRect.height),
+        });
+      }
     });
     ro.observe(containerRef.current);
     return () => ro.disconnect();
@@ -53,20 +61,24 @@ export function SegmentElevation() {
     ...allModules.map((m) => m.height)
   );
 
-  const drawableW = width - 2 * PAD_X;
-  const drawableH = STRIP_HEIGHT - LABEL_BAND - 2 * PAD_Y;
+  const svgW = size.w;
+  const svgH = size.h - HEADER_H;
+  const drawableW = svgW - 2 * PAD_X;
+  const drawableH = svgH - LABEL_BAND - 2 * PAD_Y;
   const scale = Math.min(drawableW / totalMm, drawableH / maxHeightMm);
   const fenceWPx = totalMm * scale;
   const fenceHPx = maxHeightMm * scale;
-  const baseY = PAD_Y + (drawableH - fenceHPx) + LABEL_BAND;
+  const baseY = PAD_Y + (drawableH - fenceHPx);
 
   return (
     <div
       ref={containerRef}
-      className="absolute top-2 left-2 right-2 bg-white/95 backdrop-blur border border-gray-200 rounded-lg shadow-sm overflow-hidden z-10"
-      style={{ height: STRIP_HEIGHT }}
+      className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col h-full"
     >
-      <div className="flex items-center justify-between px-3 py-1 border-b border-gray-100 bg-gray-50">
+      <div
+        className="flex items-center justify-between px-3 py-1.5 border-b border-gray-100 bg-gray-50 shrink-0"
+        style={{ height: HEADER_H }}
+      >
         <div className="text-xs font-medium text-gray-700">
           {t("elevation.title")}
         </div>
@@ -75,7 +87,7 @@ export function SegmentElevation() {
           &middot; 1:{Math.round(1 / scale)}
         </div>
       </div>
-      <svg width={width} height={STRIP_HEIGHT - 22}>
+      <svg width={svgW} height={svgH} className="flex-1">
         <line
           x1={PAD_X}
           y1={baseY + fenceHPx + 1}
