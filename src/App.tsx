@@ -27,7 +27,7 @@ function App() {
   const selectedModuleId = useProject((s) => s.selectedModuleId);
 
   return (
-    <div className="h-screen w-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-white mx-auto w-full max-w-[1600px] shadow-xl">
       <header className="h-14 bg-brand-50 text-brand-900 flex items-center px-5 justify-between shrink-0 border-b border-brand-200/70 shadow-sm">
         <div>
           <div className="text-base font-semibold tracking-tight flex items-center gap-2">
